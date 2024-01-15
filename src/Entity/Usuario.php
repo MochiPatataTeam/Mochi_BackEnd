@@ -5,7 +5,6 @@ namespace App\Entity;
 use App\Repository\UsuarioRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: UsuarioRepository::class)]
@@ -21,9 +20,12 @@ class Usuario
     private ?string $nombre = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $username = null;
+    private ?string $apellidos = null;
 
     #[ORM\Column(length: 255)]
+    private ?string $username = null;
+
+    #[ORM\Column(length: 500)]
     private ?string $password = null;
 
     #[ORM\Column(length: 255)]
@@ -44,6 +46,14 @@ class Usuario
     #[ORM\Column(length: 500, nullable: true)]
     private ?string $imagen = null;
 
+    #[ORM\OneToMany(mappedBy: 'id_canal', targetEntity: Video::class)]
+    private Collection $videos;
+
+    public function __construct()
+    {
+        $this->videos = new ArrayCollection();
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -57,6 +67,18 @@ class Usuario
     public function setNombre(string $nombre): static
     {
         $this->nombre = $nombre;
+
+        return $this;
+    }
+
+    public function getApellidos(): ?string
+    {
+        return $this->apellidos;
+    }
+
+    public function setApellidos(string $apellidos): static
+    {
+        $this->apellidos = $apellidos;
 
         return $this;
     }
@@ -140,7 +162,7 @@ class Usuario
 
     public function setSuscriptores(int $suscriptores): static
     {
-        $this->suscriptores = $suscriptores;
+        $this->ssuscriptores = $suscriptores;
 
         return $this;
     }
@@ -153,6 +175,36 @@ class Usuario
     public function setImagen(?string $imagen): static
     {
         $this->imagen = $imagen;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Video>
+     */
+    public function getVideos(): Collection
+    {
+        return $this->videos;
+    }
+
+    public function addVideo(Video $video): static
+    {
+        if (!$this->videos->contains($video)) {
+            $this->videos->add($video);
+            $video->setIdCanal($this);
+        }
+
+        return $this;
+    }
+
+    public function removeVideo(Video $video): static
+    {
+        if ($this->videos->removeElement($video)) {
+            // set the owning side to null (unless already changed)
+            if ($video->getIdCanal() === $this) {
+                $video->setIdCanal(null);
+            }
+        }
 
         return $this;
     }

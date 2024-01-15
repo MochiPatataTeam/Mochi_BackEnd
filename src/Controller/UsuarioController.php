@@ -1,6 +1,8 @@
 <?php
 
+
 namespace App\Controller;
+
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -10,9 +12,7 @@ use App\Entity\Usuario;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
-
-
-#[Route('/api/usuario')] //prueba
+#[Route('/api/usuario')]
 class UsuarioController extends AbstractController
 {
     #[Route('', name: 'lista_usuario', methods: ['GET'])]
@@ -20,6 +20,9 @@ class UsuarioController extends AbstractController
     {
         $usuarios = $usuarioRepository->findAll();
 
+
         return $this->json($usuarios);
     }
 }
+
+

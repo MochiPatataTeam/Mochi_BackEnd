@@ -6,7 +6,7 @@ use App\Repository\VideoRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: VideoRepository::class)]
-#[ORM\Table(name: "usuario", schema: "mochi")]
+#[ORM\Table(name: "video", schema: "mochi")]
 class Video
 {
     #[ORM\Id]
@@ -23,7 +23,8 @@ class Video
     #[ORM\Column(length: 500)]
     private ?string $url = null;
 
-    #[ORM\ManyToOne(inversedBy: 'videos')]
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false)]
     private ?Usuario $id_canal = null;
 
     public function getId(): ?int

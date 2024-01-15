@@ -46,9 +46,6 @@ class Usuario
     #[ORM\Column(length: 500, nullable: true)]
     private ?string $imagen = null;
 
-    #[ORM\OneToMany(mappedBy: 'id_canal', targetEntity: Video::class)]
-    private Collection $videos;
-
     public function __construct()
     {
         $this->videos = new ArrayCollection();
@@ -179,33 +176,4 @@ class Usuario
         return $this;
     }
 
-    /**
-     * @return Collection<int, Video>
-     */
-    public function getVideos(): Collection
-    {
-        return $this->videos;
-    }
-
-    public function addVideo(Video $video): static
-    {
-        if (!$this->videos->contains($video)) {
-            $this->videos->add($video);
-            $video->setIdCanal($this);
-        }
-
-        return $this;
-    }
-
-    public function removeVideo(Video $video): static
-    {
-        if ($this->videos->removeElement($video)) {
-            // set the owning side to null (unless already changed)
-            if ($video->getIdCanal() === $this) {
-                $video->setIdCanal(null);
-            }
-        }
-
-        return $this;
-    }
 }

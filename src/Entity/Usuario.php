@@ -41,7 +41,7 @@ class Usuario
     private ?string $descripcion = null;
 
     #[ORM\Column]
-    private ?int $suscriptores = null;
+    private ?int $suscriptores = 0;
 
     #[ORM\Column(length: 500, nullable: true)]
     private ?string $imagen = null;
@@ -162,10 +162,11 @@ class Usuario
 
     public function setSuscriptores(int $suscriptores): static
     {
-        $this->ssuscriptores = $suscriptores;
+        $this->suscriptores = $suscriptores;
 
         return $this;
     }
+
 
     public function getImagen(): ?string
     {

@@ -23,9 +23,14 @@ class Video
     #[ORM\Column(length: 500)]
     private ?string $url = null;
 
-    #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Usuario $id_canal = null;
+    #[ORM\ManyToOne(inversedBy: 'videos', cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(nullable: false, name: "id_canal")]
+    private ?Usuario $canal = null;
+
+
+    //#[ORM\ManyToOne]
+    //#[ORM\JoinColumn(nullable: false, name: "id_canal")]
+    //private ?Usuario $canal = null;
 
     public function getId(): ?int
     {
@@ -68,15 +73,16 @@ class Video
         return $this;
     }
 
-    public function getIdCanal(): ?Usuario
+    public function getCanal(): ?Usuario
     {
-        return $this->id_canal;
+        return $this->canal;
     }
 
-    public function setIdCanal(?Usuario $id_canal): static
+    public function setCanal(?Usuario $canal): static
     {
-        $this->id_canal = $id_canal;
+        $this->canal = $canal;
 
         return $this;
     }
+
 }

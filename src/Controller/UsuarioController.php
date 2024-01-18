@@ -4,6 +4,7 @@
 namespace App\Controller;
 
 
+use App\DTOs\UsuarioDTO;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -18,10 +19,26 @@ class UsuarioController extends AbstractController
     #[Route('', name: 'lista_usuario', methods: ['GET'])]
     public function list(UsuarioRepository $usuarioRepository): JsonResponse
     {
-        $usuarios = $usuarioRepository->findAll();
+        $listaUsuarios = $usuarioRepository->findAll();
 
+        $listaUsuariosDTO=[];
 
-        return $this->json($usuarios);
+        foreach($listaUsuarios as $usuario){
+            $usuarioDTO =new UsuarioDTO();
+            $usuarioDTO->setId($usuario->getId());
+            $usuarioDTO->setNombre($usuario->getNombre());
+            $usuarioDTO->setApellidos($usuario->getApellidos());
+            $usuarioDTO->setUsername($usuario->getUsername());
+            $usuarioDTO->setPassword($usuario->getPassword());
+            $usuarioDTO->setEmail($usuario->getEmail());
+            $usuarioDTO->setTelefono($usuario->getTelefono());
+            $usuarioDTO->setNombreCanal($usuario->getNombreCanal());
+            $usuarioDTO->setDescripcion($usuario->getDescripcion());
+            $usuarioDTO->setSuscriptores($usuario->getSuscriptores());
+
+            $listaUsuariosDTO[]=$usuarioDTO;
+        }
+        return $this->json($listaUsuariosDTO, Response::HTTP_OK);
     }
 }
 

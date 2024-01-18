@@ -10,6 +10,8 @@ use App\Repository\VideoRepository;
 use App\Entity\Video;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Doctrine\ORM\EntityManagerInterface;
+
 #[Route('/api/video')]
 class VideoController extends AbstractController
 {
@@ -32,4 +34,20 @@ class VideoController extends AbstractController
         }
         return $this->json($listaVideosDTO, Response::HTTP_OK);
     }
+    #[Route('', name: 'crear_video', methods: ['POST'])]
+    public function crearvideo (EntityManagerInterface $entityManager, Request $request): JsonResponse
+    {
+        $data =json_decode($request->getContent(),true);
+        $video = new Video();
+        $video->setTitulo($data['titulo']);
+        $video->setDescripcion($data['descripcion']);
+        $video->setUrl($data['url']);
+        //$video->setCanal($data['']); ESTO FALLA, HAY QUE PREGUNTAR
+
+        $entityManager->persist($video);
+        $entityManager->flush();
+
+        return $this->json(['message' => 'Video creado'], Response::HTTP_CREATED);
+    }
+
 }

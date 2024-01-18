@@ -12,12 +12,15 @@ use App\Repository\UsuarioRepository;
 use App\Entity\Usuario;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Doctrine\ORM\EntityManagerInterface;
+
 
 #[Route('/api/usuario')]
 class UsuarioController extends AbstractController
 {
+    //listar con DTOs
     #[Route('', name: 'lista_usuario', methods: ['GET'])]
-    public function list(UsuarioRepository $usuarioRepository): JsonResponse
+    public function listausuarios(UsuarioRepository $usuarioRepository): JsonResponse
     {
         $listaUsuarios = $usuarioRepository->findAll();
 
@@ -39,6 +42,47 @@ class UsuarioController extends AbstractController
             $listaUsuariosDTO[]=$usuarioDTO;
         }
         return $this->json($listaUsuariosDTO, Response::HTTP_OK);
+    }
+    //Crear usuario
+    #[Route('', name: 'crear_usuario', methods: ['POST'])]
+    public function crearusuario(EntityManagerInterface $entityManager, Request $request): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+
+        $usuario = new Usuario();
+        $usuario->setNombre($data['nombre']);
+        $usuario->setApellidos($data['apellidos']);
+        $usuario->setUsername($data['username']);
+        $usuario->setPassword($data['password']);
+        $usuario->setEmail($data['email']);
+        $usuario->setTelefono($data['telefono']);
+        $usuario->setNombreCanal($data['nombreCanal']);
+        $usuario->setDescripcion($data['descripcion']);
+        $usuario->setImagen($data['imagen']);
+
+        $entityManager->persist($usuario);
+        $entityManager->flush();
+
+        return $this->json(['message' => 'Usuario creado'], Response::HTTP_CREATED);
+    }
+    //Editar. DICE QUE NO PUEDE ENCONTRAR UN SERVICIO EN LA CLASE USUARIO, PREGUNTAR A LUIS
+    #[Route('/{id}', name: 'update_usuario', methods: ['PUT'])]
+    public function editarusuario (EntityManagerInterface $entityManager, Request $request, Usuario $usuario): JsonResponse
+    {
+        $data =json_decode($request->getContent(),true);
+
+        $usuario->setNombre($data['nombre']);
+        $usuario->setApellidos($data['apellidos']);
+        $usuario->setUsername($data['username']);
+        $usuario->setPassword($data['password']);
+        $usuario->setEmail($data['email']);
+        $usuario->setTelefono($data['telefono']);
+        $usuario->setNombreCanal($data['nombreCanal']);
+        $usuario->setDescripcion($data['descripcion']);
+        $usuario->setImagen($data['imagen']);
+
+        $entityManager->flush();
+        return $this->json(['message' => 'Usuario actualizado']);
     }
 }
 

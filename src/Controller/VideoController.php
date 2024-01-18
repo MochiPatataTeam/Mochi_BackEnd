@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\DTOs\VideoDTO;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -15,9 +16,20 @@ class VideoController extends AbstractController
     #[Route('', name: 'lista_video', methods: ['GET'])]
     public function list(VideoRepository $videoRepository): JsonResponse
     {
-        $videos = $videoRepository->findAll();
+        $listaVideos = $videoRepository->findAll();
 
+        $listaVideosDTO=[];
 
-        return $this->json($videos);
+        foreach ($listaVideos as $video){
+            $videoDTO = new VideoDTO();
+            $videoDTO -> setId($video->getId());
+            $videoDTO ->setTitulo($video->getTitulo());
+            $videoDTO ->setDescripcion($video->getDescripcion());
+            $videoDTO ->setUrl($video->getUrl());
+            $videoDTO ->setCanal($video->getCanal()->getNombreCanal());
+
+            $listaVideosDTO[]=$videoDTO;
+        }
+        return $this->json($listaVideosDTO, Response::HTTP_OK);
     }
 }

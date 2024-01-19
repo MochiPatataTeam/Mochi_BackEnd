@@ -5,14 +5,20 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Repository\PreguntasSeguridadRepository;
+use App\Entity\PreguntasSeguridad;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 
+#[Route('/api/pregunta')]
 class PreguntasSeguridadController extends AbstractController
 {
-    #[Route('/preguntas/seguridad', name: 'app_preguntas_seguridad')]
-    public function index(): Response
+    #[Route('', name: 'lista_preguntas_seguridad', methods: ['GET'])]
+    public function list_preguntas_seguridad(PreguntasSeguridadRepository $preguntasSeguridadRepository): JsonResponse
     {
-        return $this->render('preguntas_seguridad/index.html.twig', [
-            'controller_name' => 'PreguntasSeguridadController',
-        ]);
+        $tipos = $preguntasSeguridadRepository->findAll();
+
+
+        return $this->json($tipos);
     }
 }

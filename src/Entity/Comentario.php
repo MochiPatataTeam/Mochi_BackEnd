@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ComentarioRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ComentarioRepository::class)]
@@ -30,6 +32,14 @@ class Comentario
 
     #[ORM\Column(length: 500)]
     private ?string $comentario = null;
+
+    #[ORM\OneToMany(mappedBy: 'comentario', targetEntity: Respuesta::class, orphanRemoval: true)]
+    private Collection $respuestas;
+
+    public function __construct()
+    {
+        $this->respuestas = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -92,6 +102,36 @@ class Comentario
     public function setComentario(string $comentario): static
     {
         $this->comentario = $comentario;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Respuesta>
+     */
+    public function getRespuestas(): Collection
+    {
+        return $this->respuestas;
+    }
+
+    public function addRespuesta(Respuesta $respuesta): static
+    {
+        if (!$this->respuestas->contains($respuesta)) {
+            $this->respuestas->add($respuesta);
+            $respuesta->setComentario($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRespuesta(Respuesta $respuesta): static
+    {
+        if ($this->respuestas->removeElement($respuesta)) {
+            // set the owning side to null (unless already changed)
+            if ($respuesta->getComentario() === $this) {
+                $respuesta->setComentario(null);
+            }
+        }
 
         return $this;
     }

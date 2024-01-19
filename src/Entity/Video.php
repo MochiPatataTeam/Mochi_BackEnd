@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\VideoRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: VideoRepository::class)]
@@ -27,10 +29,18 @@ class Video
     #[ORM\JoinColumn(nullable: false, name: "id_canal")]
     private ?Usuario $canal = null;
 
+    #[ORM\OneToMany(mappedBy: 'video', targetEntity: Comentario::class, orphanRemoval: true)]
+    private Collection $comentarios;
 
-    //#[ORM\ManyToOne]
-    //#[ORM\JoinColumn(nullable: false, name: "id_canal")]
-    //private ?Usuario $canal = null;
+    #[ORM\OneToMany(mappedBy: 'video', targetEntity: Valoracion::class, orphanRemoval: true)]
+    private Collection $valoraciones;
+
+    public function __construct()
+    {
+        $this->comentarios = new ArrayCollection();
+        $this->valoraciones = new ArrayCollection();
+    }
+
 
     public function getId(): ?int
     {
@@ -81,6 +91,66 @@ class Video
     public function setCanal(?Usuario $canal): static
     {
         $this->canal = $canal;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Comentario>
+     */
+    public function getComentarios(): Collection
+    {
+        return $this->comentarios;
+    }
+
+    public function addComentario(Comentario $comentario): static
+    {
+        if (!$this->comentarios->contains($comentario)) {
+            $this->comentarios->add($comentario);
+            $comentario->setVideo($this);
+        }
+
+        return $this;
+    }
+
+    public function removeComentario(Comentario $comentario): static
+    {
+        if ($this->comentarios->removeElement($comentario)) {
+            // set the owning side to null (unless already changed)
+            if ($comentario->getVideo() === $this) {
+                $comentario->setVideo(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Valoracion>
+     */
+    public function getValoraciones(): Collection
+    {
+        return $this->valoraciones;
+    }
+
+    public function addValoracione(Valoracion $valoracione): static
+    {
+        if (!$this->valoraciones->contains($valoracione)) {
+            $this->valoraciones->add($valoracione);
+            $valoracione->setVideo($this);
+        }
+
+        return $this;
+    }
+
+    public function removeValoracione(Valoracion $valoracione): static
+    {
+        if ($this->valoraciones->removeElement($valoracione)) {
+            // set the owning side to null (unless already changed)
+            if ($valoracione->getVideo() === $this) {
+                $valoracione->setVideo(null);
+            }
+        }
 
         return $this;
     }

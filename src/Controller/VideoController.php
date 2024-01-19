@@ -42,7 +42,7 @@ class VideoController extends AbstractController
         $video->setTitulo($data['titulo']);
         $video->setDescripcion($data['descripcion']);
         $video->setUrl($data['url']);
-        //$video->setCanal($data['']); ESTO FALLA, HAY QUE PREGUNTAR
+        //$video->setCanal($data['']); //ESTO FALLA, HAY QUE PREGUNTAR
 
         $entityManager->persist($video);
         $entityManager->flush();

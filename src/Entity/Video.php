@@ -35,6 +35,10 @@ class Video
     #[ORM\OneToMany(mappedBy: 'video', targetEntity: Valoracion::class, orphanRemoval: true)]
     private Collection $valoraciones;
 
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false, name: "id_tematica")]
+    private ?Tematica $tematica = null;
+
     public function __construct()
     {
         $this->comentarios = new ArrayCollection();
@@ -151,6 +155,18 @@ class Video
                 $valoracione->setVideo(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getTematica(): ?Tematica
+    {
+        return $this->tematica;
+    }
+
+    public function setTematica(?Tematica $tematica): static
+    {
+        $this->tematica = $tematica;
 
         return $this;
     }

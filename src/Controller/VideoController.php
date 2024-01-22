@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Usuario;
+use App\Entity\Tematica;
 
 #[Route('/api/video')]
 class VideoController extends AbstractController
@@ -30,6 +31,7 @@ class VideoController extends AbstractController
             $videoDTO ->setDescripcion($video->getDescripcion());
             $videoDTO ->setUrl($video->getUrl());
             $videoDTO ->setCanal($video->getCanal()->getNombreCanal());
+            $videoDTO->setTematica($video->getTematica()->getTematica());
 
             $listaVideosDTO[]=$videoDTO;
         }
@@ -48,6 +50,8 @@ class VideoController extends AbstractController
 
         $usuario = $entityManager->getRepository(Usuario::class)->findBy(["id" => $data['canal']]);
         $nuevoVideo->setCanal($usuario[0]);
+        $tematica =$entityManager->getRepository(Tematica::class)->findBy(["id" => $data['tematica']]);
+        $nuevoVideo->setTematica($tematica[0]);
 
         $entityManager->persist($nuevoVideo);
         $entityManager->flush();
@@ -71,6 +75,8 @@ class VideoController extends AbstractController
 
         $usuario = $entityManager->getRepository(Usuario::class)->findBy(["id" => $data['canal']]);
         $video->setCanal($usuario[0]);
+        $tematica =$entityManager->getRepository(Tematica::class)->findBy(["id" => $data['tematica']]);
+        $video->setTematica($tematica[0]);
 
         $entityManager->flush();
 

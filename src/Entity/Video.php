@@ -25,7 +25,7 @@ class Video
     #[ORM\Column(length: 500)]
     private ?string $url = null;
 
-    #[ORM\ManyToOne(inversedBy: 'videos')]
+    #[ORM\ManyToOne(inversedBy: 'videos' )]
     #[ORM\JoinColumn(nullable: false, name: "id_canal")]
     private ?Usuario $canal = null;
 

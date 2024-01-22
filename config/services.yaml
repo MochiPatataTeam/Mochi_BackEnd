@@ -19,7 +19,8 @@ services:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
             - '../src/Kernel.php'
-
+    App\Entity\Respuesta:
+        autowire: true;
     App\Entity\Video:
         autowire: true
 

@@ -26,7 +26,7 @@ class Comentario
     #[ORM\JoinColumn(nullable: false,name: "id_usuario")]
     private ?Usuario $usuario = null;
 
-    #[ORM\ManyToOne(inversedBy: 'comentarios', cascade: ['persist', 'remove'])]
+    #[ORM\ManyToOne(inversedBy: 'comentarios')]
     #[ORM\JoinColumn(nullable: false, name:"id_video")]
     private ?Video $video = null;
 

@@ -9,6 +9,7 @@ class VideoDTO
     private ?string $descripcion = null;
     private ?string $url = null;
     private ?string $canal = null;
+    private ?string $tematica = null;
 
     public function getId(): ?int
     {
@@ -58,6 +59,16 @@ class VideoDTO
     public function setCanal(?string $canal): void
     {
         $this->canal = $canal;
+    }
+
+    public function getTematica(): ?string
+    {
+        return $this->tematica;
+    }
+
+    public function setTematica(?string $tematica): void
+    {
+        $this->tematica = $tematica;
     }
 
 

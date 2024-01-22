@@ -22,14 +22,29 @@ class RespuestaController extends AbstractController
 
         $listaRespuestasDTO = [];
 
-        foreach ($listaRespuestas as $respuesta){
+        foreach ($listaRespuestas as $respuesta) {
             $respuestaDTO = new RespuestaDTO();
             $respuestaDTO->setId($respuesta->getId());
             $respuestaDTO->setMensaje($respuesta->getMensaje());
 
 
-            $listaRespuestasDTO[]=$respuestaDTO;
+            $listaRespuestasDTO[] = $respuestaDTO;
         }
         return $this->json($listaRespuestasDTO, Response::HTTP_OK);
+    }
+
+    //editar
+    #[Route('/{id}', name: 'update_respuesta', methods: ['PUT'])]
+    public function editarrespuesta(EntityManagerInterface $entityManager, Request $request, Respuesta $respuesta, $id)
+    {
+        $data = json_decode($request->getContent(), true);
+
+        $respuesta = $entityManager->getRepository(Respuesta::class)->find($id);
+
+        if (!$respuesta) {
+            return $this->json(['message' => 'Respuesta no encontrada'], Response::HTTP_NOT_FOUND);
+        }
+        return $this->json(['message' => 'Respuesta no encontrada'], Response::HTTP_NOT_FOUND);
+
     }
 }

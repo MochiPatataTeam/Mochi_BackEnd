@@ -14,11 +14,11 @@ class PreguntasUsuario
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne]
     #[ORM\JoinColumn(nullable: false, name:"id_usuario")]
     private ?Usuario $usuario = null;
 
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne]
     #[ORM\JoinColumn(nullable: false, name:"id_pregunta")]
     private ?PreguntasSeguridad $pregunta = null;
 

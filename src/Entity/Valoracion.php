@@ -20,7 +20,7 @@ class Valoracion
     #[ORM\Column]
     private ?bool $dislike = false;
 
-    #[ORM\ManyToOne(inversedBy: 'valoraciones', cascade: ['persist', 'remove'])]
+    #[ORM\ManyToOne(inversedBy: 'valoraciones')]
     #[ORM\JoinColumn(nullable: false, name:"id_video")]
     private ?Video $video = null;
 

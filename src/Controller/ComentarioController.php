@@ -34,4 +34,37 @@ class ComentarioController extends AbstractController
         }
         return $this->json($listaComentariosDTO, Response::HTTP_OK);
     }
+
+    #[Route('', name: 'crear_comentario', methods: ['POST'])]
+    public function crear(EntityManagerInterface $entityManager, Request $request): JsonResponse
+    {
+        $json = json_decode($request -> getContent(), true);
+
+        $nuevoComentario = new Comentario();
+        //Like
+        //Dislike
+        //Usuario(come from FrontEnd)
+        //Video(come from FrontEnd)
+        $nuevoComentario->setComentario($json["comentario"]);
+
+        $entityManager->persist($nuevoComentario);
+        $entityManager->flush();
+
+        return $this->json(['message' => 'Comentario creado'], Response::HTTP_CREATED);
+    }
+
+    #[Route('/{id}', name: 'editar_comentario', methods: ['PUT'])] //NO FUNCIONA REVISAR
+    public function editar(EntityManagerInterface $entityManager, Request $request, comentario $comentario): JsonResponse
+    {
+        $json = json_decode($request -> getContent(), true);
+
+        //Like
+        //Dislike
+        $comentario->setComentario($json["comentario"]);
+
+        $entityManager->persist($comentario);
+        $entityManager->flush();
+
+        return $this->json(['message' => 'Comentario editado'], Response::HTTP_OK);
+    }
 }

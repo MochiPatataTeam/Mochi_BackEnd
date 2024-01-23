@@ -6,10 +6,12 @@ use App\Repository\UsuarioRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UsuarioRepository::class)]
 #[ORM\Table(name: "usuario", schema: "mochi")]
-class Usuario
+class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -208,6 +210,27 @@ class Usuario
         }
 
         return $this;
+    }
+
+    //LOGIN
+    public function eraseCredentials()
+    {
+        // TODO: Implement eraseCredentials() method.
+    }
+
+    public function getUserIdentifier(): string
+    {
+        return $this -> getUsername(); //aqui le estoy indicando que cuando el metodo user el GetUserIdentifier me de el mio de la bbdd
+    }
+
+
+    public function getRoles(): array
+    {
+        $roles = $this->roles;
+        // guarantee every user at least has ROLE_USER
+        $roles[] = 'ROLE_USER';
+
+        return array_unique($roles);
     }
 
 }

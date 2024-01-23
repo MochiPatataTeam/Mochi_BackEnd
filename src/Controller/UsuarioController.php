@@ -65,12 +65,17 @@ class UsuarioController extends AbstractController
 
         return $this->json(['message' => 'Usuario creado'], Response::HTTP_CREATED);
     }
-    //Editar. DICE QUE NO PUEDE ENCONTRAR UN SERVICIO EN LA CLASE USUARIO, PREGUNTAR A LUIS
+
     #[Route('/{id}', name: 'update_usuario', methods: ['PUT'])]
-    public function editarusuario (EntityManagerInterface $entityManager, Request $request, Usuario $usuario): JsonResponse
+    public function editarusuario (EntityManagerInterface $entityManager, Request $request, $id): JsonResponse
     {
         $data =json_decode($request->getContent(),true);
 
+        $usuario = $entityManager->getRepository(Usuario::class)->find($id);
+
+        if (!$usuario){
+            return $this->json(['message' => 'Usuario no encontrado'], Response::HTTP_NOT_FOUND);
+        }
         $usuario->setNombre($data['nombre']);
         $usuario->setApellidos($data['apellidos']);
         $usuario->setUsername($data['username']);
@@ -84,6 +89,17 @@ class UsuarioController extends AbstractController
         $entityManager->flush();
         return $this->json(['message' => 'Usuario actualizado']);
     }
+    #[Route('/{id}', name: "delete_usuario_by_id", methods: ["DELETE"])]
+    public function deleteUserById(EntityManagerInterface $entityManager, $id):JsonResponse
+    {
+        $usuario = $entityManager->getRepository(Usuario::class)->find($id);
+
+        $entityManager->remove($usuario);
+        $entityManager->flush();
+
+        return $this->json(['message' => 'Usuario eliminado'], Response::HTTP_OK);
+    }
+
 }
 
 

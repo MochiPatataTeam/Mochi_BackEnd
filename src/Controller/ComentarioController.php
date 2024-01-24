@@ -53,7 +53,7 @@ class ComentarioController extends AbstractController
         return $this->json(['message' => 'Comentario creado'], Response::HTTP_CREATED);
     }
 
-    #[Route('/{id}', name: 'editar_comentario', methods: ['PUT'])] //NO FUNCIONA REVISAR
+    #[Route('/{id}', name: 'editar_comentario', methods: ['PUT'])]
     public function editar(EntityManagerInterface $entityManager, Request $request, comentario $comentario): JsonResponse
     {
         $json = json_decode($request -> getContent(), true);
@@ -66,5 +66,15 @@ class ComentarioController extends AbstractController
         $entityManager->flush();
 
         return $this->json(['message' => 'Comentario editado'], Response::HTTP_OK);
+    }
+
+    #[Route('/{id}', name: 'eliminar_comentario_id', methods: ['DELETE'])]
+    public function deleteById(EntityManagerInterface $entityManager, comentario $comentario): JsonResponse
+    {
+
+        $entityManager->remove($comentario);
+        $entityManager->flush();
+
+        return $this->json(['message' => 'Comentario eliminado'], Response::HTTP_OK);
     }
 }

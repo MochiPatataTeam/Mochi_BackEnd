@@ -51,6 +51,10 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'canal', targetEntity: Video::class, cascade: ['persist', 'remove'])]
     private Collection $videos;
 
+    //Necesario para el login y generar el token
+    private array $roles = [];
+
+
     public function __construct()
     {
         $this->videos = new ArrayCollection();

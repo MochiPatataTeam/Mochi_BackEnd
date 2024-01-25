@@ -27,5 +27,9 @@ services:
         autowire: true;
     App\Entity\Comentario:
         autowire: true;
+    App\Entity\Suscripcion:
+        autowire: true;
+    App\Entity\Notificacion:
+        autowire: true;
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

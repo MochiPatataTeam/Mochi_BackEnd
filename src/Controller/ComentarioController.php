@@ -6,6 +6,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Repository\ComentarioRepository;
+use App\Repository\RespuestaRepository;
+use App\Entity\Respuesta;
 use App\Entity\Comentario;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,7 +23,7 @@ class ComentarioController extends AbstractController
 
         $listaComentariosDTO = [];
 
-        foreach ($listaComentarios as $comentario){
+        foreach ($listaComentarios as $comentario) {
             $comentarioDTO = new ComentarioDTO();
             $comentarioDTO->setId($comentario->getId());
             $comentarioDTO->setFav($comentario->isFav());
@@ -30,7 +32,7 @@ class ComentarioController extends AbstractController
             $comentarioDTO->setVideo($comentario->getVideo()->getTitulo());
             $comentarioDTO->setComentario($comentario->getComentario());
 
-            $listaComentariosDTO[]=$comentarioDTO;
+            $listaComentariosDTO[] = $comentarioDTO;
         }
         return $this->json($listaComentariosDTO, Response::HTTP_OK);
     }
@@ -38,7 +40,7 @@ class ComentarioController extends AbstractController
     #[Route('', name: 'crear_comentario', methods: ['POST'])]
     public function crear(EntityManagerInterface $entityManager, Request $request): JsonResponse
     {
-        $json = json_decode($request -> getContent(), true);
+        $json = json_decode($request->getContent(), true);
 
         $nuevoComentario = new Comentario();
         //Like
@@ -56,7 +58,7 @@ class ComentarioController extends AbstractController
     #[Route('/{id}', name: 'editar_comentario', methods: ['PUT'])]
     public function editar(EntityManagerInterface $entityManager, Request $request, comentario $comentario): JsonResponse
     {
-        $json = json_decode($request -> getContent(), true);
+        $json = json_decode($request->getContent(), true);
 
         //Like
         //Dislike
@@ -76,5 +78,23 @@ class ComentarioController extends AbstractController
         $entityManager->flush();
 
         return $this->json(['message' => 'Comentario eliminado'], Response::HTTP_OK);
+    }
+
+    #[Route('/{id}', name: 'buscar_respuestas', methods: ['GET'])]
+    public function getRespuestasPorComentario($id, RespuestaRepository $respuestaRepository, EntityManagerInterface $entityManager): JsonResponse
+    {
+        $respuestas = $respuestaRepository->createQueryBuilder('r')
+            ->select('c.id as comentario_id', 'c.fav', 'c.dislike','c.comentario', 'u.username as username_respuesta' ,'r.mensaje')
+            ->join('r.comentario', 'c')
+            ->join('r.usuario', 'u')
+            ->where('c.id = :id_comentario')
+            ->setParameter('id_comentario', $id)
+            ->getQuery()
+            ->getResult();
+
+        dump($respuestas);
+        return $this->json($respuestas, Response::HTTP_OK);
+
+
     }
 }

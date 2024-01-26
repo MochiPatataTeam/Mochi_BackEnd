@@ -21,6 +21,10 @@ class Respuesta
     #[ORM\Column(length: 500)]
     private ?string $mensaje = null;
 
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false, name:"id_usuario")]
+    private ?Usuario $usuario = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -46,6 +50,18 @@ class Respuesta
     public function setMensaje(string $mensaje): static
     {
         $this->mensaje = $mensaje;
+
+        return $this;
+    }
+
+    public function getUsuario(): ?Usuario
+    {
+        return $this->usuario;
+    }
+
+    public function setUsuario(?Usuario $usuario): static
+    {
+        $this->usuario = $usuario;
 
         return $this;
     }

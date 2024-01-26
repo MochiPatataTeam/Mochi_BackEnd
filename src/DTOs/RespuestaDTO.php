@@ -5,6 +5,7 @@ namespace App\DTOs;
 class RespuestaDTO
 {
     private ?int $id = null;
+    private ?string $usuario = null;
     private ?string $comentario = null;
     private ?string $mensaje = null;
 
@@ -38,6 +39,16 @@ class RespuestaDTO
     public function setMensaje(?string $mensaje): void
     {
         $this->mensaje = $mensaje;
+    }
+
+    public function getUsuario(): ?string
+    {
+        return $this->usuario;
+    }
+
+    public function setUsuario(?string $usuario): void
+    {
+        $this->usuario = $usuario;
     }
 
 

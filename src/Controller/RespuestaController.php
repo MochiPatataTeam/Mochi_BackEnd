@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Repository\RespuestaRepository;
 use App\Entity\Respuesta;
+use App\Entity\Usuario;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\EntityManagerInterface;
@@ -28,6 +29,7 @@ class RespuestaController extends AbstractController
             $respuestaDTO->setId($respuesta->getId());
             $respuestaDTO->setComentario($respuesta->getComentario()->getComentario());
             $respuestaDTO->setMensaje($respuesta->getMensaje());
+            $respuestaDTO->setUsuario($respuesta->getUsuario()->getUsername());
 
 
             $listaRespuestasDTO[] = $respuestaDTO;
@@ -43,7 +45,10 @@ class RespuestaController extends AbstractController
         $nuevaRespuesta = new Respuesta();
         $comentario = $entityManager->getRepository(Comentario::class)->findBy(["id"=>$data['comentario']]);
         $nuevaRespuesta -> setComentario($comentario[0]);
+        $usuario = $entityManager->getRepository(Usuario::class)->findBy(["id"=>$data['usuario']]);
+        $nuevaRespuesta ->setUsuario($usuario[0]);
         $nuevaRespuesta->setMensaje($data['mensaje']);
+
 
         $entityManager->persist($nuevaRespuesta);
         $entityManager->flush();
@@ -63,6 +68,8 @@ class RespuestaController extends AbstractController
         }
         $comentario = $entityManager->getRepository(Comentario::class)->findBy(["id" => $data['comentario']]);
         $respuesta->setComentario($comentario[0]);
+        $usuario = $entityManager->getRepository(Usuario::class)->findBy(["id" => $data['usuario']]);
+        $respuesta->setUsuario($usuario[0]);
         $respuesta ->setMensaje($data['mensaje']);
 
         $entityManager->flush();
@@ -83,4 +90,6 @@ class RespuestaController extends AbstractController
         return $this->json(['message' => 'Respuesta eliminada'], Response::HTTP_OK);
 
     }
+
+
 }

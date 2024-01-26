@@ -76,8 +76,8 @@ class MensajeController extends AbstractController
             $mensajeDTO -> setId($mensaje ->getId());
             $mensajeDTO -> setMensaje($mensaje ->getMensaje());
             $mensajeDTO -> setFecha($mensaje ->getFecha());
-            $mensajeDTO -> setIdEmisor($mensaje ->getIdEmisor()->getUsername());
-            $mensajeDTO -> setIdReceptor($mensaje ->getIdReceptor()->getUsername());
+            $mensajeDTO -> setIdEmisor($mensaje ->getIdEmisor()->getId());
+            $mensajeDTO -> setIdReceptor($mensaje ->getIdReceptor()->getId());
 
             $listaMensajesDTO[]= $mensajeDTO;
 

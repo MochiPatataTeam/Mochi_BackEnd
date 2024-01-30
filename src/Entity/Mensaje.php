@@ -47,14 +47,14 @@ class Mensaje
         return $this;
     }
 
-    public function getFecha(): ?\DateTimeInterface
+    public function getFecha(): ?string
     {
-        return $this->fecha;
+        return $this->fecha->format('d/m/Y');
     }
 
-    public function setFecha(\DateTimeInterface $fecha): static
+    public function setFecha(String $fecha): static
     {
-        $this->fecha = $fecha;
+        $this->fecha = \DateTime::createFromFormat('d/m/Y', $fecha);
 
         return $this;
     }

@@ -1,0 +1,11 @@
+<h1>¡Hola!</h1>
+
+<p>Para reestablecer tu contraseña visita el siguiente link</p>
+
+{#<a href="{{ url('app_reset_password', {token: resetToken.token}) }}"> Quiero recuperar mi contraseña </a>#} <!-- SYMFONY -->
+{#<a href="http://localhost:4200/newPassword"> Quiero recuperar mi contraseña </a>#} <!-- ANGULAR -->
+<a href="{{ 'http://localhost:4200/newPassword/' ~ resetToken.token }}"> Quiero recuperar mi contraseña </a> <!-- SYMFONY Y ANGULAR -->
+
+<p>Este link expirará en {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}.</p>
+
+<p>¡Saludos de parte de MochiTeam!</p>

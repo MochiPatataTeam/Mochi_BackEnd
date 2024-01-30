@@ -2,7 +2,11 @@
 
 namespace App\Controller;
 
+use App\DTOs\ComentarioDTO;
+use App\DTOs\RespuestaDTO;
 use App\DTOs\VideoDTO;
+use App\Repository\ComentarioRepository;
+use App\Repository\RespuestaRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -96,4 +100,48 @@ class VideoController extends AbstractController
 
     }
 
+    #[Route('/{id}', name: "listarVideosPorId", methods: ["GET"])]
+    public function videoID(VideoRepository $videoRepository, int $id, ComentarioRepository $comentarioRepository,RespuestaRepository $respuestaRepository): JsonResponse
+    {
+
+        $video = $videoRepository ->buscarvideoID($id);
+        $comentarios = $comentarioRepository->comentariovideoID($id);
+        $respuestas =$respuestaRepository->respuestavideoID($id);
+
+        $videoDTO = new VideoDTO();
+        $videoDTO->setId($video->getId());
+        $videoDTO->setTitulo($video->getTitulo());
+        $videoDTO->setDescripcion($video->getDescripcion());
+        $videoDTO->setUrl($video->getUrl());
+        $videoDTO->setCanal($video->getCanal()->getNombreCanal());
+        $videoDTO->setTematica($video->getTematica()->getTematica());
+
+
+        $comentariosDTO = [];
+        foreach ($comentarios as $comentario) {
+            $comentarioDTO = new ComentarioDTO();
+            $comentarioDTO->setId($comentario['id']);
+            $comentarioDTO->setFav($comentario['fav']);
+            $comentarioDTO->setComentario($comentario['comentario']);
+            $comentarioDTO->setDislike($comentario['dislike']);
+
+            $resDTO = [];
+            foreach ($respuestas as $respuesta){
+                $respuestaDTO = new RespuestaDTO();
+                $respuestaDTO->setId($respuesta['id']);
+                $respuestaDTO->setUsuario($respuesta['username_respuesta']);
+                $respuestaDTO->setMensaje($respuesta['mensaje']);
+                $resDTO[] = $respuestaDTO;
+
+            }
+
+            $comentarioDTO->setRespuesta($resDTO);
+
+            $comentariosDTO[] = $comentarioDTO;
+        }
+
+        $videoDTO->setComentarioDTO($comentariosDTO);
+
+        return $this->json($videoDTO, Response::HTTP_OK);
+    }
 }

@@ -2,6 +2,8 @@
 
 namespace App\DTOs;
 
+use App\Entity\Respuesta;
+
 class ComentarioDTO
 {
     private ?int $id = null;
@@ -10,6 +12,17 @@ class ComentarioDTO
     private ?string $usuario = null;
     private ?string $video = null;
     private ?string $comentario = null;
+    private ?array $respuesta = null;
+
+    public function getRespuesta(): ?array
+    {
+        return $this->respuesta;
+    }
+
+    public function setRespuesta(?array $respuesta): void
+    {
+        $this->respuesta = $respuesta;
+    }
 
     public function getId(): ?int
     {

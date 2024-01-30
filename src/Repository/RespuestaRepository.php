@@ -21,28 +21,15 @@ class RespuestaRepository extends ServiceEntityRepository
         parent::__construct($registry, Respuesta::class);
     }
 
-//    /**
-//     * @return Respuesta[] Returns an array of Respuesta objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('r')
-//            ->andWhere('r.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('r.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
-
-//    public function findOneBySomeField($value): ?Respuesta
-//    {
-//        return $this->createQueryBuilder('r')
-//            ->andWhere('r.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    public function respuestavideoID(int $id)
+    {
+        return $this->createQueryBuilder('r')
+            ->select('c.id as comentario_id', 'c.fav', 'c.dislike','c.comentario', 'u.username as username_respuesta','r.id' ,'r.mensaje')
+            ->join('r.comentario', 'c')
+            ->join('r.usuario', 'u')
+            ->where('c.id = :id_comentario')
+            ->setParameter('id_comentario', $id)
+            ->getQuery()
+            ->getResult();
+    }
 }

@@ -2,6 +2,8 @@
 
 namespace App\DTOs;
 
+use Doctrine\Common\Collections\Collection;
+
 class VideoDTO
 {
     private ?int $id = null;
@@ -10,6 +12,17 @@ class VideoDTO
     private ?string $url = null;
     private ?string $canal = null;
     private ?string $tematica = null;
+    private ?array $comentarioDTO = null;
+
+    public function getComentarioDTO(): ?array
+    {
+        return $this->comentarioDTO;
+    }
+
+    public function setComentarioDTO(?array $comentarioDTO): void
+    {
+        $this->comentarioDTO = $comentarioDTO;
+    }
 
     public function getId(): ?int
     {

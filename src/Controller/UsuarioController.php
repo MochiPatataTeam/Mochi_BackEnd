@@ -13,7 +13,7 @@ use App\Entity\Usuario;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\EntityManagerInterface;
-
+use Doctrine\ORM\Query\ResultSetMapping;
 
 #[Route('/api/usuario')]
 class UsuarioController extends AbstractController
@@ -99,6 +99,57 @@ class UsuarioController extends AbstractController
 
         return $this->json(['message' => 'Usuario eliminado'], Response::HTTP_OK);
     }
+
+
+
+
+
+    private $entityManager;
+    public function __construct(EntityManagerInterface $entityManager)
+    {
+        $this->entityManager = $entityManager;
+    }
+    #[Route('/query', name: 'lista_usuario2', methods: ['GET'])]
+    public function listaconquery()
+    {
+        // Obtén el EntityManager
+        $entityManager = $this->entityManager;
+
+        // Crea la consulta nativa
+        $sql = 'SELECT u.nombre, u.apellidos, u.username, u.password, u.email, u.telefono, u.nombre_canal, u.descripcion FROM mochi.usuario u';
+
+        $nativeQuery = $entityManager->createNativeQuery($sql, new ResultSetMapping());
+
+        // Ejecuta la consulta
+        $result = $nativeQuery->getResult();
+
+
+        var_dump($sql);
+        var_dump($result);
+
+        $listaUsuariosDTO1=[];
+
+        // Mapea los resultados a objetos UsuarioDTO
+        foreach ($result as $prueba) {
+            $usuarioDTO = new UsuarioDTO();
+            $usuarioDTO->setNombre($prueba['nombre'] ?? null);
+            $usuarioDTO->setApellidos($prueba['apellidos'] ?? null);
+            $usuarioDTO->setUsername($prueba['username'] ?? null);
+            $usuarioDTO->setPassword($prueba['password'] ?? null);
+            $usuarioDTO->setEmail($prueba['email'] ?? null);
+            $usuarioDTO->setTelefono($prueba['telefono'] ?? null);
+            $usuarioDTO->setNombreCanal($prueba['nombre_canal'] ?? null);
+            $usuarioDTO->setDescripcion($prueba['descripcion'] ?? null);
+
+            $listaUsuariosDTO1[] = $usuarioDTO;
+        }
+
+
+        // Devuelve la lista de DTOs como una respuesta JSON
+        return $this->json($listaUsuariosDTO1, Response::HTTP_OK);
+    }
+
+
 
 }
 

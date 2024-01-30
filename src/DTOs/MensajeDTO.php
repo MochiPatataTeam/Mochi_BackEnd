@@ -34,14 +34,14 @@ class MensajeDTO
         $this->mensaje = $mensaje;
     }
 
-    public function getFecha(): ?\DateTimeInterface
+    public function getFecha(): ?string
     {
-        return $this->fecha;
+        return $this->fecha->format('d/m/Y');
     }
 
-    public function setFecha(?\DateTimeInterface $fecha): void
+    public function setFecha(String $fecha): void
     {
-        $this->fecha = $fecha;
+        $this->fecha = \DateTime::createFromFormat('d/m/Y', $fecha);
     }
 
     public function getIdEmisor(): ?string

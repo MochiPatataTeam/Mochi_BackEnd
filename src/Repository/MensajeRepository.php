@@ -29,7 +29,7 @@ class MensajeRepository extends ServiceEntityRepository
         $sql = 'SELECT u.nombre, u.id FROM mochi.mensaje m
                 JOIN mochi.usuario u ON (m.id_emisor = u.id OR m.id_receptor = u.id)
                 WHERE (m.id_receptor = :idReceptor OR m.id_emisor = :idReceptor)
-                AND u.id <> 1
+                AND u.id <> :idReceptor
                 GROUP BY u.nombre, u.id';
 
         $query = $entityManager->getConnection()->executeQuery($sql, [

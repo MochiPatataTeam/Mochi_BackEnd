@@ -144,4 +144,20 @@ class VideoController extends AbstractController
 
         return $this->json($videoDTO, Response::HTTP_OK);
     }
+
+    //videos de tus suscripciones
+    #[Route('/suscripciones/{id}', name: 'videossuscripcion', methods: ['GET'])]
+    public function listBySuscripcion (VideoRepository $videoRepository, Request $request, int $id) :JsonResponse
+    {
+        $suscripciones = $videoRepository->buscarvideosuscripcion($id);
+        dump($suscripciones);
+        return $this->json($suscripciones, Response::HTTP_OK);
+    }
+    #[Route('/tematica/{id}', name: 'videostematica', methods: ['GET'])]
+    public function listByTematica(VideoRepository $videoRepository, Request $request, int $id)
+    {
+        $temas = $videoRepository->buscarvideotematica($id);
+        dump($temas);
+        return $this->json($temas, Response::HTTP_OK);
+    }
 }

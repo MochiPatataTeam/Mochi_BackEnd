@@ -23,10 +23,10 @@ class RegistroController extends AbstractController
         $user->setApellidos($data['apellidos']);
         $user->setUsername($data['username']);
         $user->setPassword($passwordHasher->hashPassword($user, $data['password'])); //aqui estoy guardando la password hasheada
-        $user->setEmail($data['$email']);
-        $user->setTelefono($data['$telefono']);
-        $user->setNombreCanal($data['$nombre_canal']);
-        $user->setDescripcion($data['$descripcion']);
+        $user->setEmail($data['email']);
+        $user->setTelefono($data['telefono']);
+        $user->setNombreCanal($data['nombre_canal']);
+        $user->setDescripcion($data['descripcion']);
         //suscriptores(deafult 0-null)
         //imagen
 

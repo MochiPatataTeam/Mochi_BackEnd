@@ -40,7 +40,7 @@ class VideoRepository extends ServiceEntityRepository
     //query suscripciones
     public function buscarvideosuscripcion(int $id) {
         $entityManager = $this->getEntityManager();
-        $sql = 'SELECT * FROM mochi.video v JOIN mochi.suscripcion s ON s.id_canal = v.id_canal WHERE s.id_suscriptor = :id';
+        $sql = 'SELECT * FROM mochi.video v JOIN mochi.suscripcion s ON s.id_canal = v.id_canal WHERE s.id_suscriptor = :id order by v.id limit 2';
         $query = $entityManager->getConnection()->executeQuery($sql, ['id' => $id,], ['id' => \PDO::PARAM_INT,]);
         $result = $query->fetchAllAssociative();
         return $result;

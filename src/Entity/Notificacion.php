@@ -2,12 +2,12 @@
 
 namespace App\Entity;
 
-use App\Repository\NotificaciónRepository;
+use App\Repository\NotificacionRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: NotificaciónRepository::class)]
+#[ORM\Entity(repositoryClass: NotificacionRepository::class)]
 #[ORM\Table(name: "notificacion", schema: "mochi")]
-class Notificación
+class Notificacion
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -21,6 +21,13 @@ class Notificación
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false, name:"id_tipo")]
     private ?TipoNotificacion $tipo = null;
+
+    #[ORM\Column]
+    private ?bool $visible = null;
+
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false,name: "id_creador")]
+    private ?Usuario $idCreador = null;
 
     public function getId(): ?int
     {
@@ -47,6 +54,30 @@ class Notificación
     public function setTipo(?TipoNotificacion $tipo): static
     {
         $this->tipo = $tipo;
+
+        return $this;
+    }
+
+    public function isVisible(): ?bool
+    {
+        return $this->visible;
+    }
+
+    public function setVisible(bool $visible): static
+    {
+        $this->visible = $visible;
+
+        return $this;
+    }
+
+    public function getIdCreador(): ?Usuario
+    {
+        return $this->idCreador;
+    }
+
+    public function setIdCreador(?Usuario $idCreador): static
+    {
+        $this->idCreador = $idCreador;
 
         return $this;
     }

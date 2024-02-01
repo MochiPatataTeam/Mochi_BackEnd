@@ -46,7 +46,7 @@ class VideoRepository extends ServiceEntityRepository
         return $result;
     }
 
-    //query tematica
+    //query tematica de video
     public function buscarvideotematica (int $id){
         $entityManager = $this->getEntityManager();
         $sql= 'SELECT * FROM mochi.video v JOIN mochi.tematica t ON t.id = v.id_tematica WHERE t.id = :id order by v.id asc limit 2';

@@ -153,6 +153,7 @@ class VideoController extends AbstractController
         dump($suscripciones);
         return $this->json($suscripciones, Response::HTTP_OK);
     }
+    //videos por tematicas
     #[Route('/tematica/{id}', name: 'videostematica', methods: ['GET'])]
     public function listByTematica(VideoRepository $videoRepository, Request $request, int $id)
     {

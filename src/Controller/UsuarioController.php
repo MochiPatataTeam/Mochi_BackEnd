@@ -149,8 +149,19 @@ class UsuarioController extends AbstractController
         return $this->json($listaUsuariosDTO1, Response::HTTP_OK);
     }
 
+    #[Route('/buscarId', name: "buscarId_username", methods: ["GET"])]
+    public function buscarId(Request $request, UsuarioRepository $usuarioRepository):JsonResponse
+    {
+        $username = $request->query->get('username');
 
+        if ($username === null) {
+            return $this->json($username, Response::HTTP_BAD_REQUEST);
+        }
 
+        $user = $usuarioRepository->buscarId($username);
+
+        return $this->json($user, Response::HTTP_OK);
+    }
 }
 
 

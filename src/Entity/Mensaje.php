@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\MensajeRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\Usuario;
 
 #[ORM\Entity(repositoryClass: MensajeRepository::class)]
 #[ORM\Table(name: "mensaje", schema: "mochi")]
@@ -21,12 +22,12 @@ class Mensaje
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $fecha = null;
 
-    #[ORM\ManyToOne]
+    #[ORM\ManyToOne(targetEntity: Usuario::class)]
     #[ORM\JoinColumn(nullable: false,name: "id_emisor")]
     private ?Usuario $id_emisor = null;
 
 
-    #[ORM\ManyToOne]
+    #[ORM\ManyToOne(targetEntity: Usuario::class)]
     #[ORM\JoinColumn(nullable: false,name: "id_receptor")]
     private ?Usuario $id_receptor = null;
 
@@ -59,9 +60,9 @@ class Mensaje
         return $this;
     }
 
-    public function getIdEmisor(): ?Usuario
+    public function getIdEmisor(): ?int
     {
-        return $this->id_emisor;
+        return $this->id_emisor ? $this->id_emisor->getId() : null;
     }
 
     public function setIdEmisor(?Usuario $id_emisor): static
@@ -71,9 +72,9 @@ class Mensaje
         return $this;
     }
 
-    public function getIdReceptor(): ?Usuario
+    public function getIdReceptor(): ?int
     {
-        return $this->id_receptor;
+        return $this->id_receptor ? $this->id_receptor->getId() : null;
     }
 
     public function setIdReceptor(?Usuario $id_receptor): static

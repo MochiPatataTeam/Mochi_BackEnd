@@ -6,6 +6,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Repository\ComentarioRepository;
+use App\Entity\Usuario;
+use App\Entity\Video;
 use App\Repository\RespuestaRepository;
 use App\Entity\Respuesta;
 use App\Entity\Comentario;
@@ -40,14 +42,16 @@ class ComentarioController extends AbstractController
     #[Route('', name: 'crear_comentario', methods: ['POST'])]
     public function crear(EntityManagerInterface $entityManager, Request $request): JsonResponse
     {
-        $json = json_decode($request->getContent(), true);
+        $data = json_decode($request->getContent(), true);
 
         $nuevoComentario = new Comentario();
         //Like
         //Dislike
-        //Usuario(come from FrontEnd)
-        //Video(come from FrontEnd)
-        $nuevoComentario->setComentario($json["comentario"]);
+        $usuario = $entityManager->getRepository(Usuario::class)->findBy(["id"=>$data['usuario']]);
+        $nuevoComentario->setUsuario($usuario[0]);
+        $video=$entityManager->getRepository(Video::class)->findBy(["id"=>$data['video']]);
+        $nuevoComentario->setVideo($video[0]);
+        $nuevoComentario->setComentario($data["comentario"]);
 
         $entityManager->persist($nuevoComentario);
         $entityManager->flush();

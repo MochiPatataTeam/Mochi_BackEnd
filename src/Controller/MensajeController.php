@@ -17,12 +17,24 @@ use Symfony\Component\HttpFoundation\Request;
 #[Route('/api/mensajes')]
 class MensajeController extends AbstractController
 {
+
     #[Route('', name: 'app_mensaje', methods: ['GET'])]
     public function listarMensajes(MensajeRepository $mensajeRepository): JsonResponse
     {
         $listMensajes = $mensajeRepository -> findAll();
 
         return $this->json($listMensajes, Response::HTTP_OK);
+    }
+    #[Route('/contactos', name: 'contactos', methods: ['GET'])]
+    public function getContactos(MensajeRepository $mensajeRepository, Request $request): JsonResponse
+    {
+        $id = $request->query->get('id');
+
+        $mensajes = $mensajeRepository->buscarContactos($id);
+
+        dump($mensajes);
+
+        return $this->json($mensajes, Response::HTTP_OK);
     }
     #[Route('', name: 'crear_mensajes', methods: ['POST'])]
     public function crearMensaje(EntityManagerInterface $entityManager, Request $request): JsonResponse
@@ -46,10 +58,14 @@ class MensajeController extends AbstractController
         return $this->json(['message' => 'Mensaje creado'], Response::HTTP_CREATED);
     }
 
-    #[Route('/{idEmisor}/{idReceptor}', name: 'buscar_mensajes', methods: ['GET'])]
-    public function buscarMensajesPorEmisorReceptor(int $idEmisor, int $idReceptor, MensajeRepository $mensajeRepository): JsonResponse
+    #[Route('/mensaje', name: 'buscar_mensajes', methods: ['GET'])]
+    public function getMensajes(MensajeRepository $mensajeRepository, Request $request): JsonResponse
     {
-        $mensajes = $mensajeRepository->buscarMensajes($idEmisor, $idReceptor);
+
+        $id = $request->query->get('id');
+        $id2 = $request->query->get('id2');
+
+        $mensajes = $mensajeRepository->buscarMensajes($id, $id2);
 
         $listaMensajesDTO = [];
 
@@ -59,21 +75,12 @@ class MensajeController extends AbstractController
             $mensajeDTO->setId($mensaje->getId());
             $mensajeDTO->setMensaje($mensaje->getMensaje());
             $mensajeDTO->setFecha($mensaje->getFecha());
-            $mensajeDTO->setIdEmisor($mensaje->getIdEmisor()->getId());
-            $mensajeDTO->setIdReceptor($mensaje->getIdReceptor()->getId());
+            $mensajeDTO->setIdEmisor($mensaje->getIdEmisor());
+            $mensajeDTO->setIdReceptor($mensaje->getIdReceptor());
 
             $listaMensajesDTO[] = $mensajeDTO;
         }
 
         return $this->json($listaMensajesDTO, Response::HTTP_OK);
-    }
-    #[Route('/{idReceptor}', name: 'buscar_mensajes_por_receptor', methods: ['GET'])]
-    public function getMensajesPorReceptor(int $idReceptor, MensajeRepository $mensajeRepository, EntityManagerInterface $entityManager): JsonResponse
-    {
-        $mensajes = $mensajeRepository->buscarContactos($idReceptor);
-
-        dump($mensajes);
-
-        return $this->json($mensajes, Response::HTTP_OK);
     }
 }

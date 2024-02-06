@@ -43,11 +43,11 @@ class RespuestaController extends AbstractController
         $data = json_decode($request->getContent(), true);
 
         $nuevaRespuesta = new Respuesta();
-        $comentario = $entityManager->getRepository(Comentario::class)->findBy(["id"=>$data['comentario']]);
-        $nuevaRespuesta -> setComentario($comentario[0]);
         $usuario = $entityManager->getRepository(Usuario::class)->findBy(["id"=>$data['usuario']]);
         $nuevaRespuesta ->setUsuario($usuario[0]);
-        $nuevaRespuesta->setMensaje($data['mensaje']);
+        $comentario = $entityManager->getRepository(Comentario::class)->findBy(["id"=>$data['comentario']]);
+        $nuevaRespuesta -> setComentario($comentario[0]);
+        $nuevaRespuesta->setMensaje($data['mensaje']['nuevaRespuesta']);
 
 
         $entityManager->persist($nuevaRespuesta);

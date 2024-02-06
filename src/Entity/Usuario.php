@@ -6,6 +6,7 @@ use App\Repository\UsuarioRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Scheb\TwoFactorBundle\Model\Email\TwoFactorInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -48,8 +49,27 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 500, nullable: true)]
     private ?string $imagen = null;
 
+    #[ORM\Column]
+    private ?bool $is_verified = false;
+
+    //-------------------- VERIFICACION --------------------
+//    #[ORM\Column(length: 500, nullable: true)]
+//    private ?string $authCode = null;
+
+//    /**
+//     * @ORM\Column(type="string", nullable=true)
+//     */
+//    private ?string $authCode = null;
+
+    //-------------------- VERIFICACION --------------------
+
     #[ORM\OneToMany(mappedBy: 'canal', targetEntity: Video::class, cascade: ['persist', 'remove'])]
     private Collection $videos;
+
+
+
+
+
 
     //Necesario para el login y generar el token
     private array $roles = [];
@@ -186,6 +206,16 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    public function isVerified(): ?bool
+    {
+        return $this->is_verified;
+    }
+    public function setIsVerified(bool $is_verified): static
+    {
+        $this->is_verified = $is_verified;
+        return $this;
+    }
+
     /**
      * @return Collection<int, Video>
      */
@@ -216,7 +246,7 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    //LOGIN
+    //-------------------- LOGIN --------------------
     public function eraseCredentials()
     {
         // TODO: Implement eraseCredentials() method.
@@ -239,6 +269,32 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
 
 
 
+    //-------------------- VERIFICACION --------------------
+//    public function isEmailAuthEnabled(): bool
+//    {
+//        return true; // This can be a persisted field to switch email code authentication on/off
+//    }
+//
+//    public function getEmailAuthRecipient(): string
+//    {
+//        return $this->email;
+//    }
+//
+//    public function getEmailAuthCode(): string
+//    {
+//        if (null === $this->authCode) {
+//            throw new \LogicException('Error al enviar el email de verifacacion');
+//        }
+//
+//        return $this->authCode;
+//    }
+//
+//    public function setEmailAuthCode(string $authCode): void
+//    {
+//        $this->authCode = $authCode;
+//    }
+
+    //-------------------- VERIFICACION --------------------
 
 
 

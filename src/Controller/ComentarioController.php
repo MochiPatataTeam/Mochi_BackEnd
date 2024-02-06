@@ -2,14 +2,14 @@
 
 namespace App\Controller;
 use App\DTOs\ComentarioDTO;
+use App\Entity\Usuario;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Repository\ComentarioRepository;
-use App\Entity\Usuario;
-use App\Entity\Video;
 use App\Repository\RespuestaRepository;
 use App\Entity\Respuesta;
+use App\Entity\Video;
 use App\Entity\Comentario;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -45,11 +45,9 @@ class ComentarioController extends AbstractController
         $data = json_decode($request->getContent(), true);
 
         $nuevoComentario = new Comentario();
-        //Like
-        //Dislike
-        $usuario = $entityManager->getRepository(Usuario::class)->findBy(["id"=>$data['usuario']]);
+        $usuario = $entityManager->getRepository(Usuario::class)->findBy(["id" => $data['usuario']]);
         $nuevoComentario->setUsuario($usuario[0]);
-        $video=$entityManager->getRepository(Video::class)->findBy(["id"=>$data['video']]);
+        $video = $entityManager->getRepository(Video::class)->findBy(["id" => $data['video']['id']]);
         $nuevoComentario->setVideo($video[0]);
         $nuevoComentario->setComentario($data["comentario"]);
 

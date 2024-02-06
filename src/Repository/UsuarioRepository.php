@@ -25,6 +25,27 @@ class UsuarioRepository extends ServiceEntityRepository
         parent::__construct($registry, Usuario::class);
     }
 
+    public function buscarId(string $username): array
+    {
+        $entityManager = $this->getEntityManager();
+
+        $sql = 'SELECT u.id FROM mochi.usuario u WHERE u.username  = :username';
+
+        $query = $entityManager->getConnection()->executeQuery($sql, [
+            'username' => $username,
+        ], [
+            'username' => \PDO::PARAM_STR,
+        ]);
+
+        $result = $query->fetchAllAssociative();
+
+        return $result;
+    }
+
+
+
+
+
 //    /**
 //     * @return Usuario[] Returns an array of Usuario objects
 //     */

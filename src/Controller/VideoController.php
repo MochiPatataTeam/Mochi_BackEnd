@@ -103,10 +103,10 @@ class VideoController extends AbstractController
     #[Route('/{id}', name: "listarVideosPorId", methods: ["GET"])]
     public function videoID(VideoRepository $videoRepository, int $id, ComentarioRepository $comentarioRepository,RespuestaRepository $respuestaRepository): JsonResponse
     {
-
+        $id_comentario = 0;
         $video = $videoRepository ->buscarvideoID($id);
         $comentarios = $comentarioRepository->comentariovideoID($id);
-        $respuestas =$respuestaRepository->respuestavideoID($id);
+
 
         $videoDTO = new VideoDTO();
         $videoDTO->setId($video->getId());
@@ -121,15 +121,17 @@ class VideoController extends AbstractController
         foreach ($comentarios as $comentario) {
             $comentarioDTO = new ComentarioDTO();
             $comentarioDTO->setId($comentario['id']);
+            $id_comentario= $comentario['id'];
             $comentarioDTO->setFav($comentario['fav']);
+            $comentarioDTO->setUsuario($comentario['username']);
             $comentarioDTO->setComentario($comentario['comentario']);
             $comentarioDTO->setDislike($comentario['dislike']);
-
+            $respuestas =$respuestaRepository->respuestavideoID($id, $id_comentario);
             $resDTO = [];
             foreach ($respuestas as $respuesta){
                 $respuestaDTO = new RespuestaDTO();
-                $respuestaDTO->setId($respuesta['id']);
-                $respuestaDTO->setUsuario($respuesta['username_respuesta']);
+                $respuestaDTO->setId($respuesta['respuesta_id']);
+                $respuestaDTO->setUsuario($respuesta['respuesta_username']);
                 $respuestaDTO->setMensaje($respuesta['mensaje']);
                 $resDTO[] = $respuestaDTO;
 

@@ -20,6 +20,9 @@ class Valoracion
     #[ORM\Column]
     private ?bool $dislike = false;
 
+    #[ORM\Column]
+    private ?int $visualizacion = 0;
+
     #[ORM\ManyToOne(inversedBy: 'valoraciones')]
     #[ORM\JoinColumn(nullable: false, name:"id_video")]
     private ?Video $video = null;
@@ -28,12 +31,22 @@ class Valoracion
     #[ORM\JoinColumn(nullable: false, name:"id_usuario")]
     private ?Usuario $usuario = null;
 
+    public function getVisualizacion(): ?int
+    {
+        return $this->visualizacion;
+    }
+
+    public function setVisualizacion(?int $visualizacion): void
+    {
+        $this->visualizacion = $visualizacion;
+    }
+
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function isFav(): ?bool
+    public function getFav(): ?bool
     {
         return $this->fav;
     }
@@ -45,7 +58,7 @@ class Valoracion
         return $this;
     }
 
-    public function isDislike(): ?bool
+    public function getDislike(): ?bool
     {
         return $this->dislike;
     }

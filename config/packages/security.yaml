@@ -35,6 +35,7 @@ security:
             form_login: #para el LOGIN
                 login_path: login
                 check_path: login
+            login_throttling: true #para la verificacion
             logout:
                 path: app_logout
                 target: /
@@ -42,8 +43,10 @@ security:
 
 
 
+
+
     access_control: #aqui configuro mis rutas y el rol que pueden acceder a estar rutas
-        #- { path: ^/api/login, roles: PUBLIC_ACCESS } #este permite acceder a cualqui  era(PermitAll)
+        #- { path: ^/api/login, roles: PUBLIC_ACCESS } #este permite acceder a cualquiera(PermitAll)
         #- { path: ^/api/registro, roles: PUBLIC_ACCESS } #est  e permite acceder a cualquiera
         #- { path: ^/api,       roles: IS_AUTHENTICATED_FULLY } #este permite acceder solo al que esta autentificado
         - { path: ^/api,       roles: PUBLIC_ACCESS } #este permite acceder solo al que esta autentificado

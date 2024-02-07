@@ -56,7 +56,7 @@ class RespuestaController extends AbstractController
         return $this->json(['message' => 'Respuesta creada'], Response::HTTP_CREATED);
     }
 
-    //editar
+    //editar respuesta
     #[Route('/{id}', name: 'update_respuesta', methods: ['PUT'])]
     public function editarrespuesta(EntityManagerInterface $entityManager, Request $request, $id) :JsonResponse
     {

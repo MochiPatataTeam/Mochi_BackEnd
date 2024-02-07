@@ -25,8 +25,9 @@ public function lista_valoracion(ValoracionRepository $valoracionRepository): Js
     foreach($listaValoraciones as $valoracion){
         $valoracionDTO = new ValoracionDTO();
         $valoracionDTO->setId($valoracion->getId());
-        $valoracionDTO->setFav($valoracion->isFav());
-        $valoracionDTO->setDislike($valoracion->isDislike());
+        $valoracionDTO->setFav($valoracion->getFav());
+        $valoracionDTO->setDislike($valoracion->getDislike());
+        $valoracionDTO->setVisualizacion($valoracion->getVisualizacion());
         $valoracionDTO->setVideo($valoracion->getVideo()->getTitulo());
         $valoracionDTO->setUsuario($valoracion->getUsuario()->getUsername());
 

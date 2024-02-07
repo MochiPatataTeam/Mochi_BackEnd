@@ -7,11 +7,22 @@ class ValoracionDTO
     private ?int $id = null;
     private ?bool $fav = false;
     private ?bool $dislike = false;
+    private ?int $visualizacion = 0;
     private ?string $video = null;
     private ?string $usuario = null;
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getVisualizacion(): ?int
+    {
+        return $this->visualizacion;
+    }
+
+    public function setVisualizacion(?int $visualizacion): void
+    {
+        $this->visualizacion = $visualizacion;
     }
 
     public function setId(?int $id): void

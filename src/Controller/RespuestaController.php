@@ -47,7 +47,7 @@ class RespuestaController extends AbstractController
         $nuevaRespuesta ->setUsuario($usuario[0]);
         $comentario = $entityManager->getRepository(Comentario::class)->findBy(["id"=>$data['comentario']]);
         $nuevaRespuesta -> setComentario($comentario[0]);
-        $nuevaRespuesta->setMensaje($data['mensaje']['nuevaRespuesta']);
+        $nuevaRespuesta->setMensaje($data['mensaje']);
 
 
         $entityManager->persist($nuevaRespuesta);

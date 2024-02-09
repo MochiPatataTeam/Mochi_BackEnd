@@ -9,6 +9,7 @@ use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -49,6 +50,11 @@ class RegistroController extends AbstractController
                 ['id' => $user->getId()]
             );
 
+            $signedUrl = $signatureComponents->getSignedUrl();
+            $urlWithoutVerificationType = str_replace('https://127.0.0.1:8000/api/registro/verify','', $signedUrl);
+
+
+
             // Envío del correo electrónico
             $emailVerify = (new TemplatedEmail())
                 ->from(new Address('mochitvteam@gmail.com', 'Mochi Team Bot'))
@@ -56,7 +62,9 @@ class RegistroController extends AbstractController
                 ->subject('Confirma tu cuenta')
                 ->htmlTemplate('verify/verify_email.html.twig')
                 ->context([
-                    'signedUrl' => $signatureComponents->getSignedUrl(),
+//                    'signedUrl' => 'http://localhost:4200/verified/' . $signatureComponents->getSignedUrl(),
+//                    'signedUrl' => $urlWithoutVerificationType,
+                    'signedUrl' => 'http://localhost:4200/verified/' . $urlWithoutVerificationType,  //PRUEBA A QUITAR LA BARRITA
                     'expiresAt' => $signatureComponents->getExpiresAt(),
                 ]);
 
@@ -66,7 +74,7 @@ class RegistroController extends AbstractController
 
             return new JsonResponse(['message' => 'Usuario registrado con exito. Verifica tu correo electronico'], 201);
         } catch (AccessDeniedException $e){
-            return new JsonResponse(['error' => 'Cuenta sin verificar', 'redirectUrl' =>'http://localhost:4200/error'], 403);
+            return new JsonResponse(['error' => 'Cuenta sin verificar'], Response::HTTP_FORBIDDEN);
         }
     }
 
@@ -74,21 +82,29 @@ class RegistroController extends AbstractController
     public function verifyUserEmail(Request $request,VerifyEmailHelperInterface $verifyEmailHelper, UsuarioRepository $userRepository, EntityManagerInterface $entityManager): JsonResponse
     {
 
-        $user = $userRepository ->find($request->query->get('id')); //buscamos el usuario al que pertenece este enlace de confirmación
+        $userId = $request->query->get('id');
+        $expires = $request->query->get('expires');
+        $signature = $request->query->get('signature');
+        $token = $request->query->get('token');
+
+
+
+//        $user = $userRepository ->find($request->query->get('id')); //buscamos el usuario al que pertenece este enlace de confirmación
+        $user = $userRepository ->find($userId); //buscamos el usuario al que pertenece este enlace de confirmación
         if (!$user) { //Si no se encuentra lanzamos un 404
             throw $this->createNotFoundException();
         }
-
-        try { //Para asegurarnos que la url no ha sido manipulada
-            $verifyEmailHelper->validateEmailConfirmation(
-                $request->getUri(),
-                $user->getId(),
-                $user->getEmail(),
-            );
-        } catch (VerifyEmailExceptionInterface $e){
-            $this->addFlash('error', $e->getReason());
-            return new JsonResponse(['message' => 'Error en el try catch']);
-        }
+//
+//        try { //Para asegurarnos que la url no ha sido manipulada
+//            $verifyEmailHelper->validateEmailConfirmation(
+//                $request->getUri(),
+//                $userId,
+//                $user->getEmail(),
+//            );
+//        } catch (VerifyEmailExceptionInterface $e){
+//            $this->addFlash('error', $e->getReason());
+//            return new JsonResponse(['message' => 'Error en el try catch']);
+//        }
         $user->setIsVerified(true);
         $entityManager->flush();
 

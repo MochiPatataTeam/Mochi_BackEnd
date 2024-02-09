@@ -1,11 +1,9 @@
-{# templates/verify/verify_email.html.twig #}
-
-<p>Hola!</p>
+<p>¡Hola!</p>
 
 <p>Por favor, haz click en el siguiente enlace para confirmar tu cuenta:</p>
 
-{#<a href="{{ signedUrl }}">Confirmar cuenta</a>#}
-<a href="{{ 'http://localhost:4200/verified/' ~ signedUrl }}">Confirmar cuenta</a>
+<a href="{{ signedUrl }}">Confirmar cuenta</a>
+{#<a href="{{ 'http://localhost:4200/verified/' ~ signedUrl }}">Confirmar cuenta</a>#}
 
 <p>Este link caducará en 1 hora.</p>
 

@@ -162,6 +162,29 @@ class UsuarioController extends AbstractController
 
         return $this->json($user, Response::HTTP_OK);
     }
+
+
+    #[Route('/{id}', name: 'getById', methods: ["GET"])]
+    public function getById(UsuarioRepository $usuarioRepository, int $id): JsonResponse
+    {
+        $usuarios = $usuarioRepository -> getById($id);
+
+        foreach ($usuarios as $usuario){
+            $usuarioDTO = new UsuarioDTO();
+            $usuarioDTO->setId($usuario['id']);
+            $usuarioDTO->setNombre($usuario['nombre']);
+            $usuarioDTO->setApellidos($usuario['apellidos']);
+            $usuarioDTO->setUsername($usuario['username']);
+            $usuarioDTO->setEmail($usuario['email']);
+            $usuarioDTO->setTelefono($usuario['telefono']);
+            $usuarioDTO->setNombreCanal($usuario['nombre_canal']);
+            $usuarioDTO->setDescripcion($usuario['descripcion']);
+            $usuarioDTO->setSuscriptores($usuario['suscriptores']);
+            $usuarioDTO->setImagen($usuario['imagen']);
+        }
+
+        return $this -> json($usuarioDTO, Response::HTTP_OK);
+    }
 }
 
 

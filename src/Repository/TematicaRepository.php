@@ -45,4 +45,12 @@ class TematicaRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+    public function buscarIdTematica (string $tematica){
+        $entityManager = $this->getEntityManager();
+        $sql = 'select id from mochi.tematica t where t.tematica = :tematica';
+        $query = $entityManager->getConnection()->executeQuery($sql, ['tematica'=>$tematica,],['tematica' => \PDO::PARAM_INT,]);
+        $result = $query->fetchAllAssociative();
+        return $result;
+    }
 }

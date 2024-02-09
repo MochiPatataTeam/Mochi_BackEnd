@@ -36,7 +36,7 @@ class RespuestaController extends AbstractController
         }
         return $this->json($listaRespuestasDTO, Response::HTTP_OK);
     }
-    //crear
+    //crear respuesta
     #[Route('', name: 'crear_respuesta', methods: ['POST'])]
     public function crear_respuesta (EntityManagerInterface $entityManager, Request $request): JsonResponse
     {

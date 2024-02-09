@@ -51,7 +51,7 @@ class RegistroController extends AbstractController
             );
 
             $signedUrl = $signatureComponents->getSignedUrl();
-            $urlWithoutVerificationType = str_replace('https://127.0.0.1:8000/api/registro/verify','', $signedUrl);
+            $urlWithoutVerificationType = str_replace('http://127.0.0.1:8000/api/registro/verify','', $signedUrl);
 
 
 

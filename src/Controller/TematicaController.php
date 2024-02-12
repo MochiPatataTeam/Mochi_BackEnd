@@ -21,4 +21,11 @@ class TematicaController extends AbstractController
 
         return $this->json($tematicas);
     }
+    #[Route('/buscar/{tematica}', name: 'buscar_id_tematica', methods: ['GET'])]
+    public function buscarIdTematica(TematicaRepository $tematicaRepository, Request $request, string $tematica): JsonResponse
+    {
+        $idTematica = $tematicaRepository->buscarIdTematica($tematica);
+        dump($idTematica);
+        return $this->json($idTematica, Response::HTTP_OK);
+    }
 }

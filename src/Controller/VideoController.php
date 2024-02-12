@@ -100,10 +100,10 @@ class VideoController extends AbstractController
 
     }
 
-    #[Route('/{id}', name: "listarVideosPorId", methods: ["GET"])]
+    #[Route('/listarId/{id}', name: "listarVideosPorId", methods: ["GET"])]
     public function videoID(VideoRepository $videoRepository, int $id, ComentarioRepository $comentarioRepository,RespuestaRepository $respuestaRepository): JsonResponse
     {
-        $id_comentario = 0;
+
         $video = $videoRepository ->buscarvideoID($id);
         $comentarios = $comentarioRepository->comentariovideoID($id);
 

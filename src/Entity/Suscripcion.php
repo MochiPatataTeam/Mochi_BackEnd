@@ -22,6 +22,20 @@ class Suscripcion
     #[ORM\JoinColumn(nullable: false, name:"id_canal")]
     private ?Usuario $canal = null;
 
+    #[ORM\Column]
+    private ?bool $sub = false;
+
+    public function getSub(): ?bool
+    {
+        return $this->sub;
+    }
+
+    public function setSub(?bool $sub): void
+    {
+        $this->sub = $sub;
+    }
+
+
     public function getId(): ?int
     {
         return $this->id;

@@ -21,28 +21,20 @@ class SuscripcionRepository extends ServiceEntityRepository
         parent::__construct($registry, Suscripcion::class);
     }
 
-//    /**
-//     * @return Suscripcion[] Returns an array of Suscripcion objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('s')
-//            ->andWhere('s.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('s.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    public function suscripcionid (int $id_suscriptor, int $id_canal){
+        $entityManager = $this->getEntityManager();
+        $sql= 'select s.* from mochi.suscripcion s where s.id_suscriptor = :id_suscriptor and s.id_canal = :id_canal;';
+        $query = $entityManager->getConnection()->executeQuery($sql, ['id_suscriptor' => $id_suscriptor,'id_canal' => $id_canal,], ['id_suscriptor' => \PDO::PARAM_INT,'id_canal' => \PDO::PARAM_INT,]);
+        $result = $query->fetchAllAssociative();
+        return $result;
+    }
 
-//    public function findOneBySomeField($value): ?Suscripcion
-//    {
-//        return $this->createQueryBuilder('s')
-//            ->andWhere('s.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    public function suscripciontotal (int $id_canal){
+        $entityManager = $this->getEntityManager();
+        $sql= 'select count(s.sub) as total_subs from mochi.suscripcion s where s.id_canal = :id_canal and s.sub = true';
+        $query = $entityManager->getConnection()->executeQuery($sql, ['id_canal' => $id_canal,], ['id_canal' => \PDO::PARAM_INT,]);
+        $result = $query->fetchAllAssociative();
+        return $result;
+    }
+
 }

@@ -176,6 +176,12 @@ class VideoController extends AbstractController
 
         return $this->json($response, Response::HTTP_OK);
     }
-
+    #[Route('/usuario/{id}', name: 'usuariovideo', methods: ['GET'])]
+    public function usuarioVideoId(VideoRepository $videoRepository, Request $request, int $id)
+    {
+        $usuario = $videoRepository->cogerIdUsuarioVideo($id);
+        dump($usuario);
+        return $this->json($usuario, Response::HTTP_OK);
+    }
 
 }

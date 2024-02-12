@@ -55,4 +55,12 @@ class VideoRepository extends ServiceEntityRepository
         return $result;
     }
 
+    public function cogerIdUsuarioVideo(int $id){
+        $entityManager = $this->getEntityManager();
+        $sql='select id_canal from mochi.video where id=:id';
+        $query = $entityManager->getConnection()->executeQuery($sql, ['id' => $id,], ['id' => \PDO::PARAM_INT,]);
+        $result = $query->fetchAllAssociative();
+        return $result;
+    }
+
 }

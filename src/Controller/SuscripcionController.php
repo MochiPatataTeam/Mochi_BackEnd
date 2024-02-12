@@ -24,22 +24,56 @@ class SuscripcionController extends AbstractController
 
         return $this->json($suscripciones);
     }
-    #[Route('', name: 'crear_suscripcion', methods: ['POST'])]
-    public function crear_suscripcion (EntityManagerInterface $entityManager, Request $request): JsonResponse
+    #[Route('/sub/{id_suscriptor}/{id_canal}', name: 'crear_suscripcion', methods: ['POST'])]
+    public function crear_suscripcion (EntityManagerInterface $entityManager, SuscripcionRepository $suscripcionRepository,int $id_suscriptor, int $id_canal ): JsonResponse
     {
-        $data = json_decode($request->getContent(), true);
+        $sub= $suscripcionRepository->suscripcionid($id_suscriptor,$id_canal);
 
-        $nuevaSuscripcion = new Suscripcion();
-        $suscriptor = $entityManager->getRepository(Usuario::class)->findBy(["id"=>$data['suscriptor']]);
-        $nuevaSuscripcion->setSuscriptor($suscriptor[0]);
-        $canal = $entityManager->getRepository(Usuario::class)->findBy(["id"=>$data['canal']]);
-        $nuevaSuscripcion->setCanal($canal[0]);
+        if (!$sub){
+            $nuevaSuscripcion = new Suscripcion();
+            $suscriptor = $entityManager->getRepository(Usuario::class)->findBy(["id"=>$id_suscriptor]);
+            $nuevaSuscripcion->setSuscriptor($suscriptor[0]);
+            $canal = $entityManager->getRepository(Usuario::class)->findBy(["id"=>$id_canal]);
+            $nuevaSuscripcion->setCanal($canal[0]);
+            $nuevaSuscripcion->setSub(true);
 
-        $entityManager->persist($nuevaSuscripcion);
-        $entityManager->flush();
+            $entityManager->persist($nuevaSuscripcion);
+            $entityManager->flush();
 
-        return $this->json(['message' => '¡Gracias por suscribirte!'], Response::HTTP_CREATED);
+            $suscriptores = $suscripcionRepository->suscripciontotal($id_canal);
+            $canal = $entityManager->getRepository(Usuario::class)->find($id_canal);
+            $canal->setSuscriptores($suscriptores[0]['total_subs']);
+            $entityManager->flush();
+
+
+            return $this->json(['message' => '¡Gracias por suscribirte por primera vez!'], Response::HTTP_CREATED);
+        }
+
+        $subs = $sub[0];
+        $subActual = $subs['sub'];
+        if ($subActual === true){
+            $subEntity = $entityManager->getRepository(Suscripcion::class)->find($subs['id']);
+            $subEntity->setSub(false);
+            $entityManager->flush();
+            $suscriptores = $suscripcionRepository->suscripciontotal($id_canal);
+            $canal = $entityManager->getRepository(Usuario::class)->find($id_canal);
+            $canal->setSuscriptores($suscriptores[0]['total_subs']);
+            $entityManager->flush();
+
+            return $this->json(['message' => 'Te has desuscrito perfectamente'], Response::HTTP_CREATED);
+
+        }else{
+            $subEntity = $entityManager->getRepository(Suscripcion::class)->find($subs['id']);
+            $subEntity->setSub(true);
+            $entityManager->flush();
+            $suscriptores = $suscripcionRepository->suscripciontotal($id_canal);
+            $canal = $entityManager->getRepository(Usuario::class)->find($id_canal);
+            $canal->setSuscriptores($suscriptores[0]['total_subs']);
+            $entityManager->flush();
+            return $this->json(['message' => '¡Gracias por suscribirte!'], Response::HTTP_CREATED);
+        }
     }
+
     #[Route('/{id}', name: "delete_suscripcion_by_id", methods: ["DELETE"])]
     public function deleteById(EntityManagerInterface $entityManager, $id):JsonResponse
     {

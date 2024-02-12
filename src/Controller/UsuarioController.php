@@ -5,6 +5,7 @@ namespace App\Controller;
 
 
 use App\DTOs\UsuarioDTO;
+use App\Repository\SuscripcionRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -67,24 +68,23 @@ class UsuarioController extends AbstractController
     }
 
     #[Route('/{id}', name: 'update_usuario', methods: ['PUT'])]
-    public function editarusuario (EntityManagerInterface $entityManager, Request $request, $id): JsonResponse
+    public function editarusuario (EntityManagerInterface $entityManager, Request $request, $id, SuscripcionRepository $suscripcionRepository): JsonResponse
     {
         $data =json_decode($request->getContent(),true);
 
         $usuario = $entityManager->getRepository(Usuario::class)->find($id);
-
+        $suscripcion = $suscripcionRepository->suscripciontotal($id);
         if (!$usuario){
             return $this->json(['message' => 'Usuario no encontrado'], Response::HTTP_NOT_FOUND);
         }
         $usuario->setNombre($data['nombre']);
         $usuario->setApellidos($data['apellidos']);
         $usuario->setUsername($data['username']);
-        $usuario->setPassword($data['password']);
         $usuario->setEmail($data['email']);
         $usuario->setTelefono($data['telefono']);
-        $usuario->setNombreCanal($data['nombreCanal']);
+        $usuario->setNombreCanal($data['nombre_canal']);
         $usuario->setDescripcion($data['descripcion']);
-        $usuario->setImagen($data['imagen']);
+        $usuario->setSuscriptores($suscripcion[0]['total_subs']);
 
         $entityManager->flush();
         return $this->json(['message' => 'Usuario actualizado']);

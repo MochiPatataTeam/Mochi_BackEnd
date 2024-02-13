@@ -184,4 +184,12 @@ class VideoController extends AbstractController
         return $this->json($usuario, Response::HTTP_OK);
     }
 
+    #[Route('/videosSuscripciones/{id}', name: 'videossuscripcion', methods: ['GET'])]
+    public function listTodoBySuscripcion (VideoRepository $videoRepository, Request $request, int $id) :JsonResponse
+    {
+        $suscripciones = $videoRepository->buscarTodosVideosSuscripcion($id);
+        dump($suscripciones);
+        return $this->json($suscripciones, Response::HTTP_OK);
+    }
+
 }

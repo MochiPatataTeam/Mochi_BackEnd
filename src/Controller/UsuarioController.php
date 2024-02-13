@@ -17,7 +17,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query\ResultSetMapping;
 
 #[Route('/api/usuario')]
-class UsuarioController extends AbstractController
+class   UsuarioController extends AbstractController
 {
     //listar con DTOs
     #[Route('', name: 'lista_usuario', methods: ['GET'])]
@@ -185,6 +185,30 @@ class UsuarioController extends AbstractController
 
         return $this -> json($usuarioDTO, Response::HTTP_OK);
     }
+
+
+    #[Route('/canal/{canal}', name: 'getByNombreCanal', methods: ["GET"])]
+    public function getByCanal(UsuarioRepository $usuarioRepository, string $canal): JsonResponse
+    {
+        $usuarios = $usuarioRepository -> getByCanal($canal);
+
+        foreach ($usuarios as $usuario){
+            $usuarioDTO = new UsuarioDTO();
+            $usuarioDTO->setId($usuario['id']);
+            $usuarioDTO->setNombre($usuario['nombre']);
+            $usuarioDTO->setApellidos($usuario['apellidos']);
+            $usuarioDTO->setUsername($usuario['username']);
+            $usuarioDTO->setEmail($usuario['email']);
+            $usuarioDTO->setTelefono($usuario['telefono']);
+            $usuarioDTO->setNombreCanal($usuario['nombre_canal']);
+            $usuarioDTO->setDescripcion($usuario['descripcion']);
+            $usuarioDTO->setSuscriptores($usuario['suscriptores']);
+            $usuarioDTO->setImagen($usuario['imagen']);
+        }
+
+        return $this -> json($usuarioDTO, Response::HTTP_OK);
+    }
+
 }
 
 

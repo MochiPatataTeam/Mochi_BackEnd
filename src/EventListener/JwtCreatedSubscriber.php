@@ -38,6 +38,7 @@ class JwtCreatedSubscriber
 
         $data = $event->getData(); //obtener los datos del token
         $data['id'] = $user->getId(); //al token le añado el id del usuario
+        $data['nombre_canal'] = $user->getNombreCanal(); //al token le añado el id del usuario
         $event->setData($data);
     }
 }

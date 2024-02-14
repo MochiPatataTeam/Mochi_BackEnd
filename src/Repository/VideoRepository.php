@@ -64,7 +64,7 @@ class VideoRepository extends ServiceEntityRepository
     }
     public function buscarTodosVideosSuscripcion(int $id) {
         $entityManager = $this->getEntityManager();
-        $sql = 'SELECT v.titulo, v.descripcion, v.url, u.username, t.tematica from mochi.video v 
+        $sql = 'SELECT v.id, v.titulo, v.descripcion, v.url, u.nombre_canal, t.tematica from mochi.video v 
         JOIN mochi.suscripcion s ON s.id_canal = v.id_canal 
         join mochi.usuario u on u.id = v.id_canal 
         join mochi.tematica t on v.id_tematica = t.id

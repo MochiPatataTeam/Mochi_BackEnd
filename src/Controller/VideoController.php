@@ -148,13 +148,14 @@ class VideoController extends AbstractController
     }
 
     //videos de tus suscripciones
-    #[Route('/suscripciones/{id}', name: 'videossuscripcion', methods: ['GET'])]
-    public function listBySuscripcion (VideoRepository $videoRepository, Request $request, int $id) :JsonResponse
+    #[Route('/suscripcionesDos/{id}', name: 'videossuscripcion2', methods: ['GET'])]
+    public function listSuscripcionDos(VideoRepository $videoRepository, Request $request, int $id) :JsonResponse
     {
         $suscripciones = $videoRepository->buscarvideosuscripcion($id);
         dump($suscripciones);
-        return $this->json($suscripciones, Response::HTTP_OK);
+        return  $this->json($suscripciones, Response::HTTP_OK);
     }
+
     //videos por tematicas
     #[Route('/tematica/{id}', name: 'videostematica', methods: ['GET'])]
     public function listByTematica(VideoRepository $videoRepository, Request $request, int $id)

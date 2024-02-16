@@ -81,5 +81,41 @@ class VideoRepository extends ServiceEntityRepository
         $result = $query->fetchAllAssociative();
         return $result;
     }
+    public function buscarTitulos(string $titulo)
+    {
+        $entityManager = $this->getEntityManager();
 
+        $sql = 'SELECT v.*, u.nombre_canal, u.imagen  
+            FROM mochi.video v 
+            JOIN mochi.usuario u ON u.id = v.id_canal
+            WHERE v.titulo LIKE :titulo';
+
+        $query = $entityManager->getConnection()->executeQuery($sql, [
+            'titulo' => '%' . $titulo . '%',
+        ], [
+            'titulo' => \PDO::PARAM_STR,
+        ]);
+
+        $result = $query->fetchAllAssociative();
+
+        return $result;
+    }
+    public function buscarCanal(string $canal)
+    {
+        $entityManager = $this->getEntityManager();
+
+        $sql = 'SELECT *
+                FROM mochi.usuario u 
+                WHERE u.nombre_canal LIKE :canal';
+
+        $query = $entityManager->getConnection()->executeQuery($sql, [
+            'canal' => '%' . $canal . '%',
+        ], [
+            'canal' => \PDO::PARAM_STR,
+        ]);
+
+        $result = $query->fetchAllAssociative();
+
+        return $result;
+    }
 }

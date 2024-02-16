@@ -192,5 +192,26 @@ class VideoController extends AbstractController
         dump($suscripciones);
         return $this->json($suscripciones, Response::HTTP_OK);
     }
+    #[Route('/listarTitulo', name: 'titulos', methods: ['GET'])]
+    public function getTitulo(VideoRepository $videoRepository, Request $request): JsonResponse
+    {
+        $titulo = $request->query->get('titulo');
 
+        $titulo = $videoRepository->buscarTitulos($titulo);
+
+        dump($titulo);
+
+        return $this->json($titulo, Response::HTTP_OK);
+    }
+    #[Route('/listarCanales', name: 'canales', methods: ['GET'])]
+    public function getCanales(VideoRepository $videoRepository, Request $request): JsonResponse
+    {
+        $canales = $request->query->get('nombre_canal');
+
+        $canal = $videoRepository->buscarCanal($canales);
+
+        dump($canal);
+
+        return $this->json($canal, Response::HTTP_OK);
+    }
 }

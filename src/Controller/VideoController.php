@@ -164,6 +164,7 @@ class VideoController extends AbstractController
         dump($temas);
         return $this->json($temas, Response::HTTP_OK);
     }
+
     //las suscripciones y las sugerencias de tematica juntas
     #[Route('/sugerencias/{idSuscripcion}/{idTematica}', name: 'lista_sugerencias', methods: ['GET'])]
     public function listasugerencias(VideoRepository $videoRepository, Request $request, int $idSuscripcion, int $idTematica): JsonResponse
@@ -178,6 +179,7 @@ class VideoController extends AbstractController
 
         return $this->json($response, Response::HTTP_OK);
     }
+
     #[Route('/usuario/{id}', name: 'usuariovideo', methods: ['GET'])]
     public function usuarioVideoId(VideoRepository $videoRepository, Request $request, int $id)
     {
@@ -193,6 +195,7 @@ class VideoController extends AbstractController
         dump($suscripciones);
         return $this->json($suscripciones, Response::HTTP_OK);
     }
+
     #[Route('/listarTitulo', name: 'titulos', methods: ['GET'])]
     public function getTitulo(VideoRepository $videoRepository, Request $request): JsonResponse
     {
@@ -204,6 +207,7 @@ class VideoController extends AbstractController
 
         return $this->json($titulo, Response::HTTP_OK);
     }
+
     #[Route('/listarCanales', name: 'canales', methods: ['GET'])]
     public function getCanales(VideoRepository $videoRepository, Request $request): JsonResponse
     {
@@ -215,4 +219,26 @@ class VideoController extends AbstractController
 
         return $this->json($canal, Response::HTTP_OK);
     }
+
+    #[Route('/canalId/{id}', name: 'getVideosByIDCanal', methods: ["GET"])]
+    public function getVideosByIDCanal(VideoRepository $videoRepository, int $id):JsonResponse
+    {
+        $videos = $videoRepository -> getVideosByIDCanal($id);
+        $listaVideosDTO=[];
+
+        foreach ($videos as $video){
+            $videoDTO = new videoDTO();
+            $videoDTO ->setId($video['id']);
+            $videoDTO ->setTitulo($video['titulo']);
+            $videoDTO ->setDescripcion($video['descripcion']);
+            $videoDTO ->setUrl($video['url']);
+            $videoDTO ->setCanal($video['nombre_canal']);
+            $videoDTO->setTematica($video['id_tematica']);
+
+            $listaVideosDTO[]=$videoDTO;
+        }
+
+        return $this -> json($listaVideosDTO, Response::HTTP_OK);
+    }
+
 }

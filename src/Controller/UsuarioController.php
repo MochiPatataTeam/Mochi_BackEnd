@@ -44,28 +44,6 @@ class   UsuarioController extends AbstractController
         }
         return $this->json($listaUsuariosDTO, Response::HTTP_OK);
     }
-    //Crear usuario
-    #[Route('', name: 'crear_usuario', methods: ['POST'])]
-    public function crearusuario(EntityManagerInterface $entityManager, Request $request): JsonResponse
-    {
-        $data = json_decode($request->getContent(), true);
-
-        $usuario = new Usuario();
-        $usuario->setNombre($data['nombre']);
-        $usuario->setApellidos($data['apellidos']);
-        $usuario->setUsername($data['username']);
-        $usuario->setPassword($data['password']);
-        $usuario->setEmail($data['email']);
-        $usuario->setTelefono($data['telefono']);
-        $usuario->setNombreCanal($data['nombreCanal']);
-        $usuario->setDescripcion($data['descripcion']);
-        $usuario->setImagen($data['imagen']);
-
-        $entityManager->persist($usuario);
-        $entityManager->flush();
-
-        return $this->json(['message' => 'Usuario creado'], Response::HTTP_CREATED);
-    }
 
     #[Route('/{id}', name: 'update_usuario', methods: ['PUT'])]
     public function editarusuario (EntityManagerInterface $entityManager, Request $request, $id, SuscripcionRepository $suscripcionRepository): JsonResponse
@@ -73,10 +51,11 @@ class   UsuarioController extends AbstractController
         $data =json_decode($request->getContent(),true);
 
         $usuario = $entityManager->getRepository(Usuario::class)->find($id);
-        $suscripcion = $suscripcionRepository->suscripciontotal($id);
+//        $suscripcion = $suscripcionRepository->suscripciontotal($id);
         if (!$usuario){
             return $this->json(['message' => 'Usuario no encontrado'], Response::HTTP_NOT_FOUND);
         }
+
         $usuario->setNombre($data['nombre']);
         $usuario->setApellidos($data['apellidos']);
         $usuario->setUsername($data['username']);
@@ -84,7 +63,7 @@ class   UsuarioController extends AbstractController
         $usuario->setTelefono($data['telefono']);
         $usuario->setNombreCanal($data['nombre_canal']);
         $usuario->setDescripcion($data['descripcion']);
-        $usuario->setSuscriptores($suscripcion[0]['total_subs']);
+//        $usuario->setSuscriptores($suscripcion[0]['total_subs']);
 
         $entityManager->flush();
         return $this->json(['message' => 'Usuario actualizado']);

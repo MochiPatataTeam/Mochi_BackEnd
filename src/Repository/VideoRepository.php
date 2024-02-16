@@ -69,6 +69,7 @@ class VideoRepository extends ServiceEntityRepository
         $result = $query->fetchAllAssociative();
         return $result;
     }
+
     //buscar todos los videos de todas las suscripciones
     public function buscarTodosVideosSuscripcion(int $id) {
         $entityManager = $this->getEntityManager();
@@ -118,4 +119,16 @@ class VideoRepository extends ServiceEntityRepository
 
         return $result;
     }
+
+    public function getVideosByIDCanal(int $id)
+    {
+        $entityManager = $this -> getEntityManager();
+        $sql= 'select v.id, v.titulo , v.url , v.descripcion , v.id_tematica, u.nombre_canal from mochi.video v 
+                join mochi.usuario u on u.id = v.id_canal where v.id_canal = :id';
+
+        $query = $entityManager -> getConnection() -> executeQuery($sql, ['id'=>$id],['id'=>\PDO::PARAM_INT]);
+        $result = $query->fetchAllAssociative();
+        return $result;
+    }
+
 }

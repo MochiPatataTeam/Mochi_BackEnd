@@ -37,10 +37,14 @@ class VideoRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
-    //query suscripciones
+    //query suscripciones capado a 2
     public function buscarvideosuscripcion(int $id) {
         $entityManager = $this->getEntityManager();
-        $sql = 'SELECT * FROM mochi.video v JOIN mochi.suscripcion s ON s.id_canal = v.id_canal WHERE s.id_suscriptor = :id order by v.id limit 2';
+        $sql = 'SELECT v.id, v.titulo, v.descripcion, v.url, v.id_canal, u.nombre_canal, u.imagen, t.tematica FROM mochi.video v  
+        JOIN mochi.suscripcion s ON s.id_canal = v.id_canal
+        JOIN mochi.tematica t ON t.id = v.id_tematica
+        join mochi.usuario u on v.id_canal = u.id
+        WHERE s.id_suscriptor = :id order by v.id limit 2';
         $query = $entityManager->getConnection()->executeQuery($sql, ['id' => $id,], ['id' => \PDO::PARAM_INT,]);
         $result = $query->fetchAllAssociative();
         return $result;
@@ -49,7 +53,10 @@ class VideoRepository extends ServiceEntityRepository
     //query tematica de video
     public function buscarvideotematica (int $id){
         $entityManager = $this->getEntityManager();
-        $sql= 'SELECT * FROM mochi.video v JOIN mochi.tematica t ON t.id = v.id_tematica WHERE t.id = :id order by v.id asc limit 2';
+        $sql= 'SELECT v.id, v.titulo, v.descripcion, v.url, v.id_canal, u.nombre_canal, u.imagen, t.tematica FROM mochi.video v 
+        JOIN mochi.tematica t ON t.id = v.id_tematica
+        join mochi.usuario u on v.id_canal = u.id
+        WHERE t.id = :id order by v.id asc limit 2;';
         $query = $entityManager->getConnection()->executeQuery($sql, ['id' => $id,], ['id' => \PDO::PARAM_INT,]);
         $result = $query->fetchAllAssociative();
         return $result;
@@ -62,6 +69,7 @@ class VideoRepository extends ServiceEntityRepository
         $result = $query->fetchAllAssociative();
         return $result;
     }
+    //buscar todos los videos de todas las suscripciones
     public function buscarTodosVideosSuscripcion(int $id) {
         $entityManager = $this->getEntityManager();
         $sql = 'SELECT v.id, v.titulo, v.descripcion, v.url, u.nombre_canal, t.tematica from mochi.video v 

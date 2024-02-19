@@ -37,6 +37,22 @@ class VideoRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
+//PRUEBA DE QUERY PARA QUE INTENTE TRAER LOS DATOS QUE NECESITAMOS PARA EL ID TEMATICA
+//NO FUNCIONA, HAY QUE PULIRLA
+    public function buscarvideoId1 (int $id)
+    {
+        {
+            return $this->createQueryBuilder('v')
+                ->select('v.id, v.titulo, v.descripcion, v.url, v.id_canal, v.id_tematica, t.tematica, u.nombre_canal')
+                ->Join('v.id_canal', 'u') // Join con la entidad Usuario
+                ->Join('v.id_tematica', 't') // Join con la entidad Tematica
+                ->where('v.id = :id')
+                ->setParameter('id', $id)
+                ->getQuery()
+                ->getOneOrNullResult();
+
+        }
+    }
     //query suscripciones capado a 2
     public function buscarvideosuscripcion(int $id) {
         $entityManager = $this->getEntityManager();
@@ -127,6 +143,31 @@ class VideoRepository extends ServiceEntityRepository
                 join mochi.usuario u on u.id = v.id_canal where v.id_canal = :id';
 
         $query = $entityManager -> getConnection() -> executeQuery($sql, ['id'=>$id],['id'=>\PDO::PARAM_INT]);
+        $result = $query->fetchAllAssociative();
+        return $result;
+    }
+
+    //busca videos por el nombre de la tematica
+    public function buscarvideotitulotematica (string $tematica){
+        $entityManager = $this->getEntityManager();
+        $sql= 'SELECT v.id, v.titulo, v.descripcion, v.url, v.id_canal, u.nombre_canal, u.imagen, t.tematica FROM mochi.video v 
+        JOIN mochi.tematica t ON t.id = v.id_tematica
+        join mochi.usuario u on v.id_canal = u.id
+        WHERE t.tematica = :tematica order by v.id asc limit 2;';
+        $query = $entityManager->getConnection()->executeQuery($sql, ['tematica' => $tematica,], ['id' => \PDO::PARAM_INT,]);
+        $result = $query->fetchAllAssociative();
+        return $result;
+    }
+
+    //trae los videos ordenados de mayor a menor visualizaciones
+    public function buscarvideospopulares(){
+        $entityManager = $this->getEntityManager();
+        $sql='select v.*, v1.*, t.tematica, u.nombre_canal from mochi.valoracion v
+        join mochi.video v1 on v1.id =v.id_video
+        join mochi.usuario u on u.id=v1.id_canal
+        join mochi.tematica t on t.id=v1.id_tematica
+        order by v.visualizacion desc';
+        $query = $entityManager->getConnection()->executeQuery($sql, ['id' => \PDO::PARAM_INT,]);
         $result = $query->fetchAllAssociative();
         return $result;
     }

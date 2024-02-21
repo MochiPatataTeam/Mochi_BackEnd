@@ -157,7 +157,7 @@ class VideoController extends AbstractController
     }
 
     //videos por tematicas SOLO DOS
-    #[Route('/tematica/{id}', name: 'videostematica', methods: ['GET'])]
+    #[Route('/tematica/{id}', name: 'videostematica1', methods: ['GET'])]
     public function listByTematica(VideoRepository $videoRepository, Request $request, int $id)
     {
         $temas = $videoRepository->buscarvideotematica($id);
@@ -175,18 +175,40 @@ class VideoController extends AbstractController
     }
 
     //las suscripciones y las sugerencias de tematica juntas PARA LAS TARJETAS
-    #[Route('/sugerencias/{idSuscripcion}/{idTematica}', name: 'lista_sugerencias', methods: ['GET'])]
-    public function listasugerencias(VideoRepository $videoRepository, Request $request, int $idSuscripcion, int $idTematica): JsonResponse
+    #[Route('/sugerencias/{idSuscripcion}/{tematica}', name: 'lista_sugerencias', methods: ['GET'])]
+    public function listasugerencias(VideoRepository $videoRepository, int $idSuscripcion, string $tematica): JsonResponse
     {
         $videosSuscripcion = $videoRepository->buscarvideosuscripcion($idSuscripcion);
-        $videosTematica = $videoRepository->buscarvideotematica($idTematica);
+        $videosTematica = $videoRepository->buscarvideotitulotematica($tematica);
 
-        $response = [
-            'videos_suscripcion' => $videosSuscripcion,
-            'videos_tematica' => $videosTematica
-        ];
+        $lista=[];
 
-        return $this->json($response, Response::HTTP_OK);
+        foreach ($videosSuscripcion as $video){
+            $videosSub = new VideoDTO();
+            $videosSub->setId($video['id']);
+            $videosSub->setTitulo($video['titulo']);
+            $videosSub->setDescripcion($video['descripcion']);
+            $videosSub->setUrl($video['url']);
+            $videosSub->setCanal($video['nombre_canal']);
+            $videosSub->setTematica($video['tematica']);
+            $lista[] = $videosSub;
+        }
+        foreach ($videosTematica as $video){
+            $videosSub = new VideoDTO();
+            $videosSub->setId($video['id']);
+            $videosSub->setTitulo($video['titulo']);
+            $videosSub->setDescripcion($video['descripcion']);
+            $videosSub->setUrl($video['url']);
+            $videosSub->setCanal($video['nombre_canal']);
+            $videosSub->setTematica($video['tematica']);
+            $lista[] = $videosSub;
+        }
+        //$response = [
+        //    'videos_suscripcion' => $videosSuscripcion,
+         //   'videos_tematica' => $videosTematica
+       // ];
+
+        return $this->json($lista, Response::HTTP_OK);
     }
 
     //trae el id del usuario que sube el video

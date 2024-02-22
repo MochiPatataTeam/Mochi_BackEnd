@@ -37,22 +37,6 @@ class VideoRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
-//PRUEBA DE QUERY PARA QUE INTENTE TRAER LOS DATOS QUE NECESITAMOS PARA EL ID TEMATICA
-//NO FUNCIONA, HAY QUE PULIRLA
-    public function buscarvideoId1 (int $id)
-    {
-        {
-            return $this->createQueryBuilder('v')
-                ->select('v.id, v.titulo, v.descripcion, v.url, v.id_canal, v.id_tematica, t.tematica, u.nombre_canal')
-                ->Join('v.id_canal', 'u') // Join con la entidad Usuario
-                ->Join('v.id_tematica', 't') // Join con la entidad Tematica
-                ->where('v.id = :id')
-                ->setParameter('id', $id)
-                ->getQuery()
-                ->getOneOrNullResult();
-
-        }
-    }
     //query suscripciones capado a 2
     public function buscarvideosuscripcion(int $id) {
         $entityManager = $this->getEntityManager();
@@ -168,6 +152,17 @@ class VideoRepository extends ServiceEntityRepository
         join mochi.tematica t on t.id=v1.id_tematica
         order by v.visualizacion desc';
         $query = $entityManager->getConnection()->executeQuery($sql, ['id' => \PDO::PARAM_INT,]);
+        $result = $query->fetchAllAssociative();
+        return $result;
+    }
+
+    public function getVideosByNombreCanal(string $nombreCanal)
+    {
+        $entityManager = $this -> getEntityManager();
+        $sql= 'select v.id, v.titulo , v.url , v.descripcion , v.id_tematica, v.id_canal, u.nombre_canal  from mochi.video v 
+                join mochi.usuario u on u.id = v.id_canal where u.nombre_canal = :nombreCanal';
+
+        $query = $entityManager -> getConnection() -> executeQuery($sql, ['nombreCanal'=>$nombreCanal],['nombreCanal'=>\PDO::PARAM_INT]);
         $result = $query->fetchAllAssociative();
         return $result;
     }

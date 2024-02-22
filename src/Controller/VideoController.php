@@ -284,4 +284,25 @@ class VideoController extends AbstractController
     }
 
 
+    #[Route('/canalNombre/{canal}', name: 'getVideosByNombreCanal', methods: ["GET"])]
+    public function getVideosByNombreCanal(VideoRepository $videoRepository, string $canal):JsonResponse
+    {
+        $videos = $videoRepository -> getVideosByNombreCanal($canal);
+        $listaVideosDTO=[];
+
+        foreach ($videos as $video){
+            $videoDTO = new videoDTO();
+            $videoDTO ->setId($video['id']);
+            $videoDTO ->setTitulo($video['titulo']);
+            $videoDTO ->setDescripcion($video['descripcion']);
+            $videoDTO ->setUrl($video['url']);
+            $videoDTO ->setCanal($video['nombre_canal']);
+            $videoDTO->setTematica($video['id_tematica']);
+
+            $listaVideosDTO[]=$videoDTO;
+        }
+
+        return $this -> json($listaVideosDTO, Response::HTTP_OK);
+    }
+
 }

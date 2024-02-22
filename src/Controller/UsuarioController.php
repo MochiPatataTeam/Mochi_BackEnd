@@ -141,6 +141,19 @@ class   UsuarioController extends AbstractController
 
         return $this->json($user, Response::HTTP_OK);
     }
+    #[Route('/buscarIdCanal', name: "buscarId_canal", methods: ["GET"])]
+    public function buscarIdCanal(Request $request, UsuarioRepository $usuarioRepository):JsonResponse
+    {
+        $canal = $request->query->get('nombre_canal');
+
+        if ($canal === null) {
+            return $this->json($canal, Response::HTTP_BAD_REQUEST);
+        }
+
+        $user = $usuarioRepository->buscarIdCanal($canal);
+
+        return $this->json($user, Response::HTTP_OK);
+    }
 
 
     #[Route('/{id}', name: 'getById', methods: ["GET"])]

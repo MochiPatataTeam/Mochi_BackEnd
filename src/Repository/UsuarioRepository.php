@@ -41,6 +41,22 @@ class UsuarioRepository extends ServiceEntityRepository
 
         return $result;
     }
+    public function buscarIdCanal(string $canal): array
+    {
+        $entityManager = $this->getEntityManager();
+
+        $sql = 'SELECT u.id FROM mochi.usuario u WHERE u.nombre_canal  = :canal';
+
+        $query = $entityManager->getConnection()->executeQuery($sql, [
+            'username' => $canal,
+        ], [
+            'username' => \PDO::PARAM_STR,
+        ]);
+
+        $result = $query->fetchAllAssociative();
+
+        return $result;
+    }
 
 
     public function getById(int $id)

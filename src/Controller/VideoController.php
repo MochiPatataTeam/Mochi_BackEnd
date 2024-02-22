@@ -99,7 +99,7 @@ class VideoController extends AbstractController
         return $this->json(['message' => 'Video eliminado'], Response::HTTP_OK);
 
     }
-
+    //video con comentarios y respuestas
     #[Route('/listarId/{id}', name: "listarVideosPorId", methods: ["GET"])]
     public function videoID(VideoRepository $videoRepository, int $id, ComentarioRepository $comentarioRepository,RespuestaRepository $respuestaRepository): JsonResponse
     {

@@ -73,6 +73,17 @@ class SuscripcionController extends AbstractController
             return $this->json(['message' => '¡Gracias por suscribirte!', 'prueba' => true], Response::HTTP_CREATED);
         }
     }
+    #[Route('/subs', name: 'subs', methods: ['GET'])]
+    public function getContactos(SuscripcionRepository $suscripcionRepository, Request $request): JsonResponse
+    {
+        $id = $request->query->get('id_canal');
+
+        $subs = $suscripcionRepository->buscarSubs($id);
+
+        dump($subs);
+
+        return $this->json($subs, Response::HTTP_OK);
+    }
     #[Route('/comprobar/{id_suscriptor}/{id_canal}', name: 'comprobar_suscripcion', methods: ['GET'])]
     public function comprobarsub(SuscripcionRepository $suscripcionRepository,int $id_suscriptor, int $id_canal): JsonResponse
     {

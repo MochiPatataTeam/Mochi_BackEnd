@@ -36,5 +36,21 @@ class SuscripcionRepository extends ServiceEntityRepository
         $result = $query->fetchAllAssociative();
         return $result;
     }
+    public function buscarSubs(int $idCanal)
+    {
+        $entityManager = $this->getEntityManager();
 
+        $sql = 'select * from mochi.suscripcion s 
+        where s.id_canal= :idCanal and s.sub =true';
+
+        $query = $entityManager->getConnection()->executeQuery($sql, [
+            'idCanal' => $idCanal,
+        ], [
+            'idCanal' => \PDO::PARAM_INT,
+        ]);
+
+        $result = $query->fetchAllAssociative();
+
+        return $result;
+    }
 }

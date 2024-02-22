@@ -48,9 +48,9 @@ class UsuarioRepository extends ServiceEntityRepository
         $sql = 'SELECT u.id FROM mochi.usuario u WHERE u.nombre_canal  = :canal';
 
         $query = $entityManager->getConnection()->executeQuery($sql, [
-            'username' => $canal,
+            'canal' =>  $canal,
         ], [
-            'username' => \PDO::PARAM_STR,
+            'canal' => \PDO::PARAM_STR,
         ]);
 
         $result = $query->fetchAllAssociative();

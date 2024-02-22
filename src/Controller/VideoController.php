@@ -99,7 +99,7 @@ class VideoController extends AbstractController
         return $this->json(['message' => 'Video eliminado'], Response::HTTP_OK);
 
     }
-
+    //video con comentarios y respuestas
     #[Route('/listarId/{id}', name: "listarVideosPorId", methods: ["GET"])]
     public function videoID(VideoRepository $videoRepository, int $id, ComentarioRepository $comentarioRepository,RespuestaRepository $respuestaRepository): JsonResponse
     {
@@ -147,7 +147,7 @@ class VideoController extends AbstractController
         return $this->json($videoDTO, Response::HTTP_OK);
     }
 
-    //videos de tus suscripciones
+    //videos de tus suscripciones que solo trae dos
     #[Route('/suscripcionesDos/{id}', name: 'videossuscripcion2', methods: ['GET'])]
     public function listSuscripcionDos(VideoRepository $videoRepository, Request $request, int $id) :JsonResponse
     {
@@ -156,8 +156,8 @@ class VideoController extends AbstractController
         return  $this->json($suscripciones, Response::HTTP_OK);
     }
 
-    //videos por tematicas
-    #[Route('/tematica/{id}', name: 'videostematica', methods: ['GET'])]
+    //videos por tematicas SOLO DOS
+    #[Route('/tematica/{id}', name: 'videostematica1', methods: ['GET'])]
     public function listByTematica(VideoRepository $videoRepository, Request $request, int $id)
     {
         $temas = $videoRepository->buscarvideotematica($id);
@@ -165,21 +165,53 @@ class VideoController extends AbstractController
         return $this->json($temas, Response::HTTP_OK);
     }
 
-    //las suscripciones y las sugerencias de tematica juntas
-    #[Route('/sugerencias/{idSuscripcion}/{idTematica}', name: 'lista_sugerencias', methods: ['GET'])]
-    public function listasugerencias(VideoRepository $videoRepository, Request $request, int $idSuscripcion, int $idTematica): JsonResponse
+    //video que busca tematica por texto
+    #[Route('/tematica/nombre/{tematica}', name: 'videostematica', methods: ['GET'])]
+    public function buscarvideotitulotematica(VideoRepository $videoRepository, Request $request, string $tematica)
     {
-        $videosSuscripcion = $videoRepository->buscarvideosuscripcion($idSuscripcion);
-        $videosTematica = $videoRepository->buscarvideotematica($idTematica);
-
-        $response = [
-            'videos_suscripcion' => $videosSuscripcion,
-            'videos_tematica' => $videosTematica
-        ];
-
-        return $this->json($response, Response::HTTP_OK);
+        $temas = $videoRepository->buscarvideotitulotematica($tematica);
+        dump($temas);
+        return $this->json($temas, Response::HTTP_OK);
     }
 
+    //las suscripciones y las sugerencias de tematica juntas PARA LAS TARJETAS
+    #[Route('/sugerencias/{idSuscripcion}/{tematica}', name: 'lista_sugerencias', methods: ['GET'])]
+    public function listasugerencias(VideoRepository $videoRepository, int $idSuscripcion, string $tematica): JsonResponse
+    {
+        $videosSuscripcion = $videoRepository->buscarvideosuscripcion($idSuscripcion);
+        $videosTematica = $videoRepository->buscarvideotitulotematica($tematica);
+
+        $lista=[];
+
+        foreach ($videosSuscripcion as $video){
+            $videosSub = new VideoDTO();
+            $videosSub->setId($video['id']);
+            $videosSub->setTitulo($video['titulo']);
+            $videosSub->setDescripcion($video['descripcion']);
+            $videosSub->setUrl($video['url']);
+            $videosSub->setCanal($video['nombre_canal']);
+            $videosSub->setTematica($video['tematica']);
+            $lista[] = $videosSub;
+        }
+        foreach ($videosTematica as $video){
+            $videosSub = new VideoDTO();
+            $videosSub->setId($video['id']);
+            $videosSub->setTitulo($video['titulo']);
+            $videosSub->setDescripcion($video['descripcion']);
+            $videosSub->setUrl($video['url']);
+            $videosSub->setCanal($video['nombre_canal']);
+            $videosSub->setTematica($video['tematica']);
+            $lista[] = $videosSub;
+        }
+        //$response = [
+        //    'videos_suscripcion' => $videosSuscripcion,
+         //   'videos_tematica' => $videosTematica
+       // ];
+
+        return $this->json($lista, Response::HTTP_OK);
+    }
+
+    //trae el id del usuario que sube el video
     #[Route('/usuario/{id}', name: 'usuariovideo', methods: ['GET'])]
     public function usuarioVideoId(VideoRepository $videoRepository, Request $request, int $id)
     {
@@ -188,6 +220,7 @@ class VideoController extends AbstractController
         return $this->json($usuario, Response::HTTP_OK);
     }
 
+    //trae todos los videos de las suscripciones que tenga el usuario
     #[Route('/videosSuscripciones/{id}', name: 'videossuscripcion', methods: ['GET'])]
     public function listTodoBySuscripcion (VideoRepository $videoRepository, Request $request, int $id) :JsonResponse
     {
@@ -240,6 +273,16 @@ class VideoController extends AbstractController
 
         return $this -> json($listaVideosDTO, Response::HTTP_OK);
     }
+
+    //trae los videos ordenados por el número de reproducciones, de mayor a menor
+    #[Route('/populares', name: 'videosPopulares', methods: ['GET'])]
+    public function videosPopulares(VideoRepository $videoRepository, Request $request) :JsonResponse
+    {
+        $populares = $videoRepository->buscarvideospopulares();
+        dump($populares);
+        return $this->json($populares, Response::HTTP_OK);
+    }
+
 
     #[Route('/canalNombre/{canal}', name: 'getVideosByNombreCanal', methods: ["GET"])]
     public function getVideosByNombreCanal(VideoRepository $videoRepository, string $canal):JsonResponse

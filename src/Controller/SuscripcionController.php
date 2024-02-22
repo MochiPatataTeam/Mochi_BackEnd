@@ -46,7 +46,7 @@ class SuscripcionController extends AbstractController
             $entityManager->flush();
 
 
-            return $this->json(['message' => '¡Gracias por suscribirte por primera vez!'], Response::HTTP_CREATED);
+            return $this->json(['message' => '¡Gracias por suscribirte por primera vez!', 'prueba' => true], Response::HTTP_CREATED);
         }
 
         $subs = $sub[0];
@@ -60,7 +60,7 @@ class SuscripcionController extends AbstractController
             $canal->setSuscriptores($suscriptores[0]['total_subs']);
             $entityManager->flush();
 
-            return $this->json(['message' => 'Te has desuscrito perfectamente'], Response::HTTP_CREATED);
+            return $this->json(['message' => 'Te has desuscrito perfectamente', 'prueba' => false],Response::HTTP_CREATED);
 
         }else{
             $subEntity = $entityManager->getRepository(Suscripcion::class)->find($subs['id']);
@@ -70,9 +70,29 @@ class SuscripcionController extends AbstractController
             $canal = $entityManager->getRepository(Usuario::class)->find($id_canal);
             $canal->setSuscriptores($suscriptores[0]['total_subs']);
             $entityManager->flush();
-            return $this->json(['message' => '¡Gracias por suscribirte!'], Response::HTTP_CREATED);
+            return $this->json(['message' => '¡Gracias por suscribirte!', 'prueba' => true], Response::HTTP_CREATED);
         }
     }
+    #[Route('/comprobar/{id_suscriptor}/{id_canal}', name: 'comprobar_suscripcion', methods: ['GET'])]
+    public function comprobarsub(SuscripcionRepository $suscripcionRepository,int $id_suscriptor, int $id_canal): JsonResponse
+    {
+        $sub= $suscripcionRepository->suscripcionid($id_suscriptor,$id_canal);
+
+        if (!$sub){
+            return $this->json(['prueba' => false], Response::HTTP_CREATED);
+        }
+        $subs = $sub[0];
+        $subActual = $subs['sub'];
+        if ($subActual === true){
+            return $this->json(['prueba' => true], Response::HTTP_CREATED);
+        }else{
+            return $this->json(['prueba' => false], Response::HTTP_CREATED);
+        }
+
+    }
+
+
+
 
     #[Route('/{id}', name: "delete_suscripcion_by_id", methods: ["DELETE"])]
     public function deleteById(EntityManagerInterface $entityManager, $id):JsonResponse

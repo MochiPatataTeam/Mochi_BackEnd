@@ -47,6 +47,8 @@ class NotificacionController extends AbstractController
         $nuevaNotificacion->setUsuario($usuario[0]);
         $tipo =$entityManager->getRepository(TipoNotificacion::class)->findBy(["id"=>$data['tipo']]);
         $nuevaNotificacion->setTipo($tipo[0]);
+        $usuarioCreador= $entityManager->getRepository(Usuario::class)->findBy(["id"=>$data['id_creador']]);
+        $nuevaNotificacion->setIdCreador($usuarioCreador[0]);
 
         $entityManager->persist($nuevaNotificacion);
         $entityManager->flush();

@@ -24,7 +24,7 @@ class VideoController extends AbstractController
     #[Route('', name: 'lista_video', methods: ['GET'])]
     public function list(VideoRepository $videoRepository): JsonResponse
     {
-        $listaVideos = $videoRepository->findAll();
+        $listaVideos = $videoRepository->findBy([], null,4);
 
         $listaVideosDTO=[];
 
@@ -229,6 +229,7 @@ class VideoController extends AbstractController
         return $this->json($suscripciones, Response::HTTP_OK);
     }
 
+    //Lista por titulos
     #[Route('/listarTitulo', name: 'titulos', methods: ['GET'])]
     public function getTitulo(VideoRepository $videoRepository, Request $request): JsonResponse
     {
@@ -241,6 +242,7 @@ class VideoController extends AbstractController
         return $this->json($titulo, Response::HTTP_OK);
     }
 
+    //Lista por canales
     #[Route('/listarCanales', name: 'canales', methods: ['GET'])]
     public function getCanales(VideoRepository $videoRepository, Request $request): JsonResponse
     {

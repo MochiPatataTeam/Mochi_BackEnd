@@ -24,7 +24,7 @@ class VideoController extends AbstractController
     #[Route('', name: 'lista_video', methods: ['GET'])]
     public function list(VideoRepository $videoRepository): JsonResponse
     {
-        $listaVideos = $videoRepository->findBy([], null,4);
+        $listaVideos = $videoRepository->findAll();
 
         $listaVideosDTO=[];
 

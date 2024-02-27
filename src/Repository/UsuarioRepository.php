@@ -62,7 +62,7 @@ class UsuarioRepository extends ServiceEntityRepository
     public function getById(int $id)
     {
         $entityManager = $this -> getEntityManager();
-        $sql = 'select u.id , u.nombre , u.apellidos , u.username , u.email , u.telefono , u.nombre_canal , u.descripcion , u.suscriptores , u.imagen 
+        $sql = 'select u.id , u.nombre , u.apellidos , u.username , u.email , u.telefono , u.nombre_canal , u.descripcion , u.suscriptores , u.imagen
                 from mochi.usuario u where u.id = :id';
 
         $query = $entityManager -> getConnection() -> executeQuery($sql, ['id'=>$id],['id'=>\PDO::PARAM_INT]);
@@ -70,16 +70,19 @@ class UsuarioRepository extends ServiceEntityRepository
         return $result;
     }
 
+
     public function getByCanal(string $nombreCanal)
     {
         $entityManager = $this -> getEntityManager();
-        $sql = 'select u.id , u.nombre , u.apellidos , u.username , u.email , u.telefono , u.nombre_canal , u.descripcion , u.suscriptores , u.imagen 
+        $sql = 'select u.id , u.nombre , u.apellidos , u.username , u.email , u.telefono , u.nombre_canal , u.descripcion , u.suscriptores , u.imagen
                 from mochi.usuario u where u.nombre_canal = :nombreCanal';
 
         $query = $entityManager -> getConnection() -> executeQuery($sql, ['nombreCanal'=>$nombreCanal],['nombreCanal'=>\PDO::PARAM_INT]);
         $result = $query->fetchAllAssociative();
         return $result;
     }
+
+
 
 
 

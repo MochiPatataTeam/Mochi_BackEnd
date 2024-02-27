@@ -52,28 +52,14 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?bool $is_verified = false;
 
-    //-------------------- VERIFICACION --------------------
-//    #[ORM\Column(length: 500, nullable: true)]
-//    private ?string $authCode = null;
-
-//    /**
-//     * @ORM\Column(type="string", nullable=true)
-//     */
-//    private ?string $authCode = null;
-
-    //-------------------- VERIFICACION --------------------
-
     #[ORM\OneToMany(mappedBy: 'canal', targetEntity: Video::class, cascade: ['persist', 'remove'])]
     private Collection $videos;
-
-
-
-
-
 
     //Necesario para el login y generar el token
     private array $roles = [];
 
+    #[ORM\OneToOne(mappedBy: 'usuario', cascade: ['persist', 'remove'])]
+    private ?PrivacidadUsuario $privacidadUsuario = null;
 
     public function __construct()
     {
@@ -267,34 +253,22 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
         return array_unique($roles);
     }
 
+    public function getPrivacidadUsuario(): ?PrivacidadUsuario
+    {
+        return $this->privacidadUsuario;
+    }
 
+    public function setPrivacidadUsuario(PrivacidadUsuario $privacidadUsuario): static
+    {
+        // set the owning side of the relation if necessary
+        if ($privacidadUsuario->getUsuario() !== $this) {
+            $privacidadUsuario->setUsuario($this);
+        }
 
-    //-------------------- VERIFICACION --------------------
-//    public function isEmailAuthEnabled(): bool
-//    {
-//        return true; // This can be a persisted field to switch email code authentication on/off
-//    }
-//
-//    public function getEmailAuthRecipient(): string
-//    {
-//        return $this->email;
-//    }
-//
-//    public function getEmailAuthCode(): string
-//    {
-//        if (null === $this->authCode) {
-//            throw new \LogicException('Error al enviar el email de verifacacion');
-//        }
-//
-//        return $this->authCode;
-//    }
-//
-//    public function setEmailAuthCode(string $authCode): void
-//    {
-//        $this->authCode = $authCode;
-//    }
+        $this->privacidadUsuario = $privacidadUsuario;
 
-    //-------------------- VERIFICACION --------------------
+        return $this;
+    }
 
 
 

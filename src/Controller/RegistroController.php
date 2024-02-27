@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\PrivacidadUsuario;
 use App\Entity\Usuario;
 use App\Repository\UsuarioRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -38,9 +39,14 @@ class RegistroController extends AbstractController
             $user->setDescripcion($data['descripcion']);
             //suscriptores(deafult 0-null)
             //imagen
+            $privacidadUsuario = new PrivacidadUsuario();
+            $privacidadUsuario->setUsuario($user);
 
 
             $entityManager->persist($user);
+            $entityManager->flush();
+
+            $entityManager->persist($privacidadUsuario);
             $entityManager->flush();
 
             $signatureComponents = $verifyEmailHelper->generateSignature(
@@ -51,8 +57,8 @@ class RegistroController extends AbstractController
             );
 
             $signedUrl = $signatureComponents->getSignedUrl();
-            //$urlWithoutVerificationType = str_replace('http://localhost:8000/api/registro/verify','', $signedUrl);
-            $urlWithoutVerificationType = str_replace('http://127.0.0.1:8000/api/registro/verify','', $signedUrl);
+            $urlWithoutVerificationType = str_replace('https://127.0.0.1:8000/api/registro/verify','', $signedUrl);
+
 
 
             // Envío del correo electrónico

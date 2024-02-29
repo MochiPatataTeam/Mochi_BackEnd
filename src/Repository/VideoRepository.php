@@ -131,7 +131,7 @@ class VideoRepository extends ServiceEntityRepository
         return $result;
     }
 
-    //busca videos por el nombre de la tematica del video que se le pasa
+    //busca videos por el nombre de la tematica del video que se le pasa por texto
     public function buscarvideotitulotematica (string $tematica){
         $entityManager = $this->getEntityManager();
         $sql= 'SELECT v.id, v.titulo, v.descripcion, v.url, v.id_canal, u.nombre_canal, u.imagen, t.tematica FROM mochi.video v 

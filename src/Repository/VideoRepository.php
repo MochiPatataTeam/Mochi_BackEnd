@@ -137,7 +137,7 @@ class VideoRepository extends ServiceEntityRepository
         $sql= 'SELECT v.id, v.titulo, v.descripcion, v.url, v.id_canal, u.nombre_canal, u.imagen, t.tematica FROM mochi.video v 
         JOIN mochi.tematica t ON t.id = v.id_tematica
         join mochi.usuario u on v.id_canal = u.id
-        WHERE t.tematica = :tematica order by v.id asc limit 2;';
+        WHERE t.tematica = :tematica order by v.id asc';
         $query = $entityManager->getConnection()->executeQuery($sql, ['tematica' => $tematica,], ['id' => \PDO::PARAM_INT,]);
         $result = $query->fetchAllAssociative();
         return $result;

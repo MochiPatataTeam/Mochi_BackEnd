@@ -5,8 +5,10 @@ namespace App\Controller;
 use App\DTOs\ComentarioDTO;
 use App\DTOs\RespuestaDTO;
 use App\DTOs\VideoDTO;
+use App\DTOs\ValoracionGlobalDTO;
 use App\Repository\ComentarioRepository;
 use App\Repository\RespuestaRepository;
+use App\Repository\ValoracionRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -22,7 +24,7 @@ use App\Entity\Tematica;
 class VideoController extends AbstractController
 {
     #[Route('', name: 'lista_video', methods: ['GET'])]
-    public function list(VideoRepository $videoRepository): JsonResponse
+    public function list(VideoRepository $videoRepository, ValoracionRepository $valoracionRepository): JsonResponse
     {
         $listaVideos = $videoRepository->findAll();
 
@@ -36,6 +38,19 @@ class VideoController extends AbstractController
             $videoDTO ->setUrl($video->getUrl());
             $videoDTO ->setCanal($video->getCanal()->getNombreCanal());
             $videoDTO->setTematica($video->getTematica()->getTematica());
+
+            $visualizacion = $valoracionRepository->visualizacionTotal($videoDTO->getId());
+            $like = $valoracionRepository->favTotal($videoDTO->getId());
+            $dislike = $valoracionRepository->dislikeTotal($videoDTO->getId());
+            $visualizacionesDTO = [];
+
+            $valoraciones = new ValoracionGlobalDTO();
+            $valoraciones->setVisualizacion($visualizacion[0]['visualizacion']);
+            $valoraciones->setFav($like[0]['fav']);
+            $valoraciones->setDislike($dislike[0]['dislike']);
+            $visualizacionesDTO[] = $valoraciones;
+
+            $videoDTO->setValoracionGlobalDTO($visualizacionesDTO);
 
             $listaVideosDTO[]=$videoDTO;
         }
@@ -101,7 +116,7 @@ class VideoController extends AbstractController
     }
     //video con comentarios y respuestas
     #[Route('/listarId/{id}', name: "listarVideosPorId", methods: ["GET"])]
-    public function videoID(VideoRepository $videoRepository, int $id, ComentarioRepository $comentarioRepository,RespuestaRepository $respuestaRepository): JsonResponse
+    public function videoID(ValoracionRepository $valoracionRepository, VideoRepository $videoRepository, int $id, ComentarioRepository $comentarioRepository,RespuestaRepository $respuestaRepository): JsonResponse
     {
 
         $video = $videoRepository ->buscarvideoID($id);
@@ -144,6 +159,19 @@ class VideoController extends AbstractController
 
         $videoDTO->setComentarioDTO($comentariosDTO);
 
+        $visualizacion = $valoracionRepository->visualizacionTotal($id);
+        $like = $valoracionRepository->favTotal($id);
+        $dislike = $valoracionRepository->dislikeTotal($id);
+
+
+        $valoraciones = new ValoracionGlobalDTO();
+        $valoraciones->setVisualizacion($visualizacion[0]['visualizacion']);
+        $valoraciones->setFav($like[0]['fav']);
+        $valoraciones->setDislike($dislike[0]['dislike']);
+        $visualizacionesDTO[] = $valoraciones;
+
+        $videoDTO->setValoracionGlobalDTO($visualizacionesDTO);
+
         return $this->json($videoDTO, Response::HTTP_OK);
     }
 
@@ -167,9 +195,29 @@ class VideoController extends AbstractController
 
     //video que busca tematica por texto
     #[Route('/tematica/nombre/{tematica}', name: 'videostematica', methods: ['GET'])]
-    public function buscarvideotitulotematica(VideoRepository $videoRepository, Request $request, string $tematica)
+    public function buscarvideotitulotematica(ValoracionRepository $valoracionRepository,VideoRepository $videoRepository, Request $request, string $tematica)
     {
         $temas = $videoRepository->buscarvideotitulotematica($tematica);
+
+        foreach ($temas as &$subs) {
+            $visualizacion = $valoracionRepository->visualizacionTotal($subs['id']);
+            $like = $valoracionRepository->favTotal($subs['id']);
+            $dislike = $valoracionRepository->dislikeTotal($subs['id']);
+
+            $valoraciones = new ValoracionGlobalDTO();
+            $valoraciones->setVisualizacion($visualizacion[0]['visualizacion']);
+            $valoraciones->setFav($like[0]['fav']);
+            $valoraciones->setDislike($dislike[0]['dislike']);
+
+            // Agregar los valores de visualización, favoritos y disgustos al elemento actual de suscripciones
+            $subs['visualizacion'] = $valoraciones->getVisualizacion();
+            $subs['fav'] = $valoraciones->getFav();
+            $subs['dislike'] = $valoraciones->getDislike();
+        }
+
+
+
+
         dump($temas);
         return $this->json($temas, Response::HTTP_OK);
     }
@@ -222,12 +270,30 @@ class VideoController extends AbstractController
 
     //trae todos los videos de las suscripciones que tenga el usuario
     #[Route('/videosSuscripciones/{id}', name: 'videossuscripcion', methods: ['GET'])]
-    public function listTodoBySuscripcion (VideoRepository $videoRepository, Request $request, int $id) :JsonResponse
+    public function listTodoBySuscripcion(ValoracionRepository $valoracionRepository, VideoRepository $videoRepository, int $id): JsonResponse
     {
         $suscripciones = $videoRepository->buscarTodosVideosSuscripcion($id);
-        dump($suscripciones);
+
+
+        foreach ($suscripciones as &$subs) {
+            $visualizacion = $valoracionRepository->visualizacionTotal($subs['id']);
+            $like = $valoracionRepository->favTotal($subs['id']);
+            $dislike = $valoracionRepository->dislikeTotal($subs['id']);
+
+            $valoraciones = new ValoracionGlobalDTO();
+            $valoraciones->setVisualizacion($visualizacion[0]['visualizacion']);
+            $valoraciones->setFav($like[0]['fav']);
+            $valoraciones->setDislike($dislike[0]['dislike']);
+
+            // Agregar los valores de visualización, favoritos y disgustos al elemento actual de suscripciones
+            $subs['visualizacion'] = $valoraciones->getVisualizacion();
+            $subs['fav'] = $valoraciones->getFav();
+            $subs['dislike'] = $valoraciones->getDislike();
+        }
+
         return $this->json($suscripciones, Response::HTTP_OK);
     }
+
 
     //Lista por titulos
     #[Route('/listarTitulo', name: 'titulos', methods: ['GET'])]
@@ -278,9 +344,26 @@ class VideoController extends AbstractController
 
     //trae los videos ordenados por el número de reproducciones, de mayor a menor
     #[Route('/populares', name: 'videosPopulares', methods: ['GET'])]
-    public function videosPopulares(VideoRepository $videoRepository, Request $request) :JsonResponse
+    public function videosPopulares(ValoracionRepository $valoracionRepository,VideoRepository $videoRepository, Request $request) :JsonResponse
     {
         $populares = $videoRepository->buscarvideospopulares();
+
+        foreach ($populares as &$subs) {
+            $visualizacion = $valoracionRepository->visualizacionTotal($subs['id']);
+            $like = $valoracionRepository->favTotal($subs['id']);
+            $dislike = $valoracionRepository->dislikeTotal($subs['id']);
+
+            $valoraciones = new ValoracionGlobalDTO();
+            $valoraciones->setVisualizacion($visualizacion[0]['visualizacion']);
+            $valoraciones->setFav($like[0]['fav']);
+            $valoraciones->setDislike($dislike[0]['dislike']);
+
+            // Agregar los valores de visualización, favoritos y disgustos al elemento actual de suscripciones
+            $subs['visualizacion'] = $valoraciones->getVisualizacion();
+            $subs['fav'] = $valoraciones->getFav();
+            $subs['dislike'] = $valoraciones->getDislike();
+        }
+
         dump($populares);
         return $this->json($populares, Response::HTTP_OK);
     }

@@ -13,6 +13,17 @@ class VideoDTO
     private ?string $canal = null;
     private ?string $tematica = null;
     private ?array $comentarioDTO = null;
+    private ?array $valoracionGlobalDTO = null;
+
+    public function getValoracionGlobalDTO(): ?array
+    {
+        return $this->valoracionGlobalDTO;
+    }
+
+    public function setValoracionGlobalDTO(?array $valoracionGlobalDTO): void
+    {
+        $this->valoracionGlobalDTO = $valoracionGlobalDTO;
+    }
 
     public function getComentarioDTO(): ?array
     {

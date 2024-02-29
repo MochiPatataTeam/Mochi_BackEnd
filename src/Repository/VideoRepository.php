@@ -146,11 +146,13 @@ class VideoRepository extends ServiceEntityRepository
     //trae los videos ordenados de mayor a menor visualizaciones
     public function buscarvideospopulares(){
         $entityManager = $this->getEntityManager();
-        $sql='select v.*, v1.*, t.tematica, u.nombre_canal from mochi.valoracion v
-        join mochi.video v1 on v1.id =v.id_video
-        join mochi.usuario u on u.id=v1.id_canal
-        join mochi.tematica t on t.id=v1.id_tematica
-        order by v.visualizacion desc';
+        $sql='select v.id_video, sum(v.visualizacion) as visualizacion, v1.*, t.tematica, u.nombre_canal
+from mochi.valoracion v
+join mochi.video v1 on v1.id =v.id_video
+join mochi.usuario u on u.id=v1.id_canal
+join mochi.tematica t on t.id=v1.id_tematica
+group by v.id_video,v1.id,t.tematica,u.nombre_canal
+order by visualizacion desc ';
         $query = $entityManager->getConnection()->executeQuery($sql, ['id' => \PDO::PARAM_INT,]);
         $result = $query->fetchAllAssociative();
         return $result;

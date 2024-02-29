@@ -26,7 +26,7 @@ class MensajeRepository extends ServiceEntityRepository
     {
         $entityManager = $this->getEntityManager();
 
-        $sql = 'SELECT u.nombre, u.id FROM mochi.mensaje m
+        $sql = 'SELECT u.nombre, u.id, u.imagen FROM mochi.mensaje m
                 JOIN mochi.usuario u ON (m.id_emisor = u.id OR m.id_receptor = u.id)
                 WHERE (m.id_receptor = :idReceptor OR m.id_emisor = :idReceptor)
                 AND u.id <> :idReceptor

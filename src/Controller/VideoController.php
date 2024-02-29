@@ -297,16 +297,41 @@ class VideoController extends AbstractController
 
     //Lista por titulos
     #[Route('/listarTitulo', name: 'titulos', methods: ['GET'])]
-    public function getTitulo(VideoRepository $videoRepository, Request $request): JsonResponse
+    public function getTitulo(VideoRepository $videoRepository, ValoracionRepository $valoracionRepository, Request $request): JsonResponse
     {
         $titulo = $request->query->get('titulo');
 
-        $titulo = $videoRepository->buscarTitulos($titulo);
+        $titulos = $videoRepository->buscarTitulos($titulo);
 
-        dump($titulo);
+        $titulosDTO = [];
+        foreach ($titulos as $video) {
+            $videoDTO = new VideoDTO();
+            $videoDTO ->setId($video['id']);
+            $videoDTO ->setTitulo($video['titulo']);
+            $videoDTO ->setDescripcion($video['descripcion']);
+            $videoDTO ->setUrl($video['url']);
+            $videoDTO ->setCanal($video['nombre_canal']);
+            $videoDTO->setTematica($video['id_tematica']);
 
-        return $this->json($titulo, Response::HTTP_OK);
+            $visualizacion = $valoracionRepository->visualizacionTotal($videoDTO->getId());
+            $like = $valoracionRepository->favTotal($videoDTO->getId());
+            $dislike = $valoracionRepository->dislikeTotal($videoDTO->getId());
+            $visualizacionesDTO = [];
+
+            $valoraciones = new ValoracionGlobalDTO();
+            $valoraciones->setVisualizacion($visualizacion[0]['visualizacion']);
+            $valoraciones->setFav($like[0]['fav']);
+            $valoraciones->setDislike($dislike[0]['dislike']);
+            $visualizacionesDTO[] = $valoraciones;
+
+            $videoDTO->setValoracionGlobalDTO($visualizacionesDTO);
+
+            $titulosDTO[]=$videoDTO;
+        }
+
+        return $this->json($titulosDTO, Response::HTTP_OK);
     }
+
 
     //Lista por canales
     #[Route('/listarCanales', name: 'canales', methods: ['GET'])]
@@ -322,7 +347,7 @@ class VideoController extends AbstractController
     }
 
     #[Route('/canalId/{id}', name: 'getVideosByIDCanal', methods: ["GET"])]
-    public function getVideosByIDCanal(VideoRepository $videoRepository, int $id):JsonResponse
+    public function getVideosByIDCanal(VideoRepository $videoRepository, int $id, ValoracionRepository $valoracionRepository):JsonResponse
     {
         $videos = $videoRepository -> getVideosByIDCanal($id);
         $listaVideosDTO=[];
@@ -335,6 +360,19 @@ class VideoController extends AbstractController
             $videoDTO ->setUrl($video['url']);
             $videoDTO ->setCanal($video['nombre_canal']);
             $videoDTO->setTematica($video['id_tematica']);
+
+            $visualizacion = $valoracionRepository->visualizacionTotal($videoDTO->getId());
+            $like = $valoracionRepository->favTotal($videoDTO->getId());
+            $dislike = $valoracionRepository->dislikeTotal($videoDTO->getId());
+            $visualizacionesDTO = [];
+
+            $valoraciones = new ValoracionGlobalDTO();
+            $valoraciones->setVisualizacion($visualizacion[0]['visualizacion']);
+            $valoraciones->setFav($like[0]['fav']);
+            $valoraciones->setDislike($dislike[0]['dislike']);
+            $visualizacionesDTO[] = $valoraciones;
+
+            $videoDTO->setValoracionGlobalDTO($visualizacionesDTO);
 
             $listaVideosDTO[]=$videoDTO;
         }
@@ -370,7 +408,7 @@ class VideoController extends AbstractController
 
 
     #[Route('/canalNombre/{canal}', name: 'getVideosByNombreCanal', methods: ["GET"])]
-    public function getVideosByNombreCanal(VideoRepository $videoRepository, string $canal):JsonResponse
+    public function getVideosByNombreCanal(VideoRepository $videoRepository, string $canal, ValoracionRepository $valoracionRepository):JsonResponse
     {
         $videos = $videoRepository -> getVideosByNombreCanal($canal);
         $listaVideosDTO=[];
@@ -383,6 +421,19 @@ class VideoController extends AbstractController
             $videoDTO ->setUrl($video['url']);
             $videoDTO ->setCanal($video['nombre_canal']);
             $videoDTO->setTematica($video['id_tematica']);
+
+            $visualizacion = $valoracionRepository->visualizacionTotal($videoDTO->getId());
+            $like = $valoracionRepository->favTotal($videoDTO->getId());
+            $dislike = $valoracionRepository->dislikeTotal($videoDTO->getId());
+            $visualizacionesDTO = [];
+
+            $valoraciones = new ValoracionGlobalDTO();
+            $valoraciones->setVisualizacion($visualizacion[0]['visualizacion']);
+            $valoraciones->setFav($like[0]['fav']);
+            $valoraciones->setDislike($dislike[0]['dislike']);
+            $visualizacionesDTO[] = $valoraciones;
+
+            $videoDTO->setValoracionGlobalDTO($visualizacionesDTO);
 
             $listaVideosDTO[]=$videoDTO;
         }

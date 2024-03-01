@@ -87,9 +87,10 @@ class VideoRepository extends ServiceEntityRepository
         $entityManager = $this->getEntityManager();
 
         $sql = 'SELECT v.*, u.nombre_canal, u.imagen  
-            FROM mochi.video v 
-            JOIN mochi.usuario u ON u.id = v.id_canal
-            WHERE v.titulo LIKE :titulo';
+                FROM mochi.video v 
+                JOIN mochi.usuario u ON u.id = v.id_canal
+                WHERE LOWER(v.titulo) LIKE LOWER(:titulo)
+                ';
 
         $query = $entityManager->getConnection()->executeQuery($sql, [
             'titulo' => '%' . $titulo . '%',
@@ -106,8 +107,8 @@ class VideoRepository extends ServiceEntityRepository
         $entityManager = $this->getEntityManager();
 
         $sql = 'SELECT *
-                FROM mochi.usuario u 
-                WHERE u.nombre_canal LIKE :canal';
+                    FROM mochi.usuario u
+                    WHERE LOWER(u.nombre_canal) LIKE LOWER(:canal)';
 
         $query = $entityManager->getConnection()->executeQuery($sql, [
             'canal' => '%' . $canal . '%',

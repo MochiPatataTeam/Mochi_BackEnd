@@ -73,10 +73,11 @@ class VideoRepository extends ServiceEntityRepository
     //buscar todos los videos de todas las suscripciones
     public function buscarTodosVideosSuscripcion(int $id) {
         $entityManager = $this->getEntityManager();
-        $sql = 'SELECT v.id, v.titulo, v.descripcion, v.url, u.nombre_canal, t.tematica from mochi.video v 
+        $sql = 'SELECT v.id, v.titulo, v.descripcion, v.url, u.nombre_canal, t.tematica, pu.is_publico , pu.permitir_descargar from mochi.video v 
         JOIN mochi.suscripcion s ON s.id_canal = v.id_canal 
         join mochi.usuario u on u.id = v.id_canal 
         join mochi.tematica t on v.id_tematica = t.id
+        join mochi.privacidad_usuario pu on pu.id_usuario = u.id 
         WHERE s.id_suscriptor=:id order by v.id';
         $query = $entityManager->getConnection()->executeQuery($sql, ['id' => $id,], ['id' => \PDO::PARAM_INT,]);
         $result = $query->fetchAllAssociative();
@@ -135,9 +136,10 @@ class VideoRepository extends ServiceEntityRepository
     //busca videos por el nombre de la tematica del video que se le pasa por texto
     public function buscarvideotitulotematica (string $tematica){
         $entityManager = $this->getEntityManager();
-        $sql= 'SELECT v.id, v.titulo, v.descripcion, v.url, v.id_canal, u.nombre_canal, u.imagen, t.tematica FROM mochi.video v 
+        $sql= 'SELECT v.id, v.titulo, v.descripcion, v.url, v.id_canal, u.nombre_canal, u.imagen, t.tematica, pu.is_publico , pu.permitir_descargar  FROM mochi.video v 
         JOIN mochi.tematica t ON t.id = v.id_tematica
         join mochi.usuario u on v.id_canal = u.id
+        join mochi.privacidad_usuario pu on pu.id_usuario = u.id 
         WHERE t.tematica = :tematica order by v.id asc';
         $query = $entityManager->getConnection()->executeQuery($sql, ['tematica' => $tematica,], ['id' => \PDO::PARAM_INT,]);
         $result = $query->fetchAllAssociative();
@@ -147,13 +149,14 @@ class VideoRepository extends ServiceEntityRepository
     //trae los videos ordenados de mayor a menor visualizaciones
     public function buscarvideospopulares(){
         $entityManager = $this->getEntityManager();
-        $sql='select v.id_video, sum(v.visualizacion) as visualizacion, v1.*, t.tematica, u.nombre_canal
-from mochi.valoracion v
-join mochi.video v1 on v1.id =v.id_video
-join mochi.usuario u on u.id=v1.id_canal
-join mochi.tematica t on t.id=v1.id_tematica
-group by v.id_video,v1.id,t.tematica,u.nombre_canal
-order by visualizacion desc ';
+        $sql='select v.id_video, sum(v.visualizacion) as visualizacion, v1.*, t.tematica, u.nombre_canal, pu.is_publico , pu.permitir_descargar 
+            from mochi.valoracion v
+            join mochi.video v1 on v1.id =v.id_video
+            join mochi.usuario u on u.id=v1.id_canal
+            join mochi.tematica t on t.id=v1.id_tematica
+            join mochi.privacidad_usuario pu on u.id = pu.id_usuario 
+            group by v.id_video,v1.id,t.tematica,u.nombre_canal, pu.is_publico , pu.permitir_descargar 
+            order by visualizacion desc';
         $query = $entityManager->getConnection()->executeQuery($sql, ['id' => \PDO::PARAM_INT,]);
         $result = $query->fetchAllAssociative();
         return $result;

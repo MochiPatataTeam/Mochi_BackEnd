@@ -231,25 +231,36 @@ class VideoController extends AbstractController
 
         $lista=[];
 
-        foreach ($videosSuscripcion as $video){
-            $videosSub = new VideoDTO();
-            $videosSub->setId($video['id']);
-            $videosSub->setTitulo($video['titulo']);
-            $videosSub->setDescripcion($video['descripcion']);
-            $videosSub->setUrl($video['url']);
-            $videosSub->setCanal($video['nombre_canal']);
-            $videosSub->setTematica($video['tematica']);
-            $lista[] = $videosSub;
+        foreach ($videosSuscripcion as $video) {
+            // Crear un array asociativo que represente un video con su imagen
+            $videoConImagen = [
+                'id' => $video['id'],
+                'titulo' => $video['titulo'],
+                'descripcion' => $video['descripcion'],
+                'url' => $video['url'],
+                'nombre_canal' => $video['nombre_canal'],
+                'tematica' => $video['tematica'],
+                'imagen' => $video['imagen']
+            ];
+
+            // Agregar el video al array lista
+            $lista[] = $videoConImagen;
         }
-        foreach ($videosTematica as $video){
-            $videosSub = new VideoDTO();
-            $videosSub->setId($video['id']);
-            $videosSub->setTitulo($video['titulo']);
-            $videosSub->setDescripcion($video['descripcion']);
-            $videosSub->setUrl($video['url']);
-            $videosSub->setCanal($video['nombre_canal']);
-            $videosSub->setTematica($video['tematica']);
-            $lista[] = $videosSub;
+
+        foreach ($videosTematica as $video) {
+            // Crear un array asociativo que represente un video con su imagen
+            $videoConImagen = [
+                'id' => $video['id'],
+                'titulo' => $video['titulo'],
+                'descripcion' => $video['descripcion'],
+                'url' => $video['url'],
+                'nombre_canal' => $video['nombre_canal'],
+                'tematica' => $video['tematica'],
+                'imagen' => $video['imagen']
+            ];
+
+            // Agregar el video al array lista
+            $lista[] = $videoConImagen;
         }
         //$response = [
         //    'videos_suscripcion' => $videosSuscripcion,

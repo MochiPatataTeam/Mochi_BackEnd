@@ -14,6 +14,24 @@ class VideoDTO
     private ?string $tematica = null;
     private ?array $comentarioDTO = null;
     private ?array $valoracionGlobalDTO = null;
+    private ?array $PrivacidadDTO = null;
+
+    /**
+     * @return array|null
+     */
+    public function getPrivacidadDTO(): ?array
+    {
+        return $this->PrivacidadDTO;
+    }
+
+    /**
+     * @param array|null $PrivacidadDTO
+     */
+    public function setPrivacidadDTO(?array $PrivacidadDTO): void
+    {
+        $this->PrivacidadDTO = $PrivacidadDTO;
+    }
+
 
     public function getValoracionGlobalDTO(): ?array
     {

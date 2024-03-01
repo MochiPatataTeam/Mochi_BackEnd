@@ -3,10 +3,13 @@
 namespace App\Controller;
 
 use App\DTOs\ComentarioDTO;
+use App\DTOs\PrivacidadUsuarioDTO;
 use App\DTOs\RespuestaDTO;
 use App\DTOs\VideoDTO;
 use App\DTOs\ValoracionGlobalDTO;
+use App\Entity\PrivacidadUsuario;
 use App\Repository\ComentarioRepository;
+use App\Repository\PrivacidadUsuarioRepository;
 use App\Repository\RespuestaRepository;
 use App\Repository\ValoracionRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -24,7 +27,7 @@ use App\Entity\Tematica;
 class VideoController extends AbstractController
 {
     #[Route('', name: 'lista_video', methods: ['GET'])]
-    public function list(VideoRepository $videoRepository, ValoracionRepository $valoracionRepository): JsonResponse
+    public function list(VideoRepository $videoRepository, ValoracionRepository $valoracionRepository, PrivacidadUsuarioRepository $privacidadUsuarioRepository): JsonResponse
     {
         $listaVideos = $videoRepository->findAll();
 
@@ -51,6 +54,17 @@ class VideoController extends AbstractController
             $visualizacionesDTO[] = $valoraciones;
 
             $videoDTO->setValoracionGlobalDTO($visualizacionesDTO);
+
+            $privacidadDelCanal = $privacidadUsuarioRepository->getByCanal($videoDTO->getCanal());
+            $privacidadCanalDTO = []; //lista para almacenar la privacidad de cada video
+
+            $privacidadCanal= new PrivacidadUsuarioDTO();
+            $privacidadCanal->setIsPublico($privacidadDelCanal[0]['is_publico']);
+//            $privacidadCanal->setPermitirSuscripciones($privacidadDelCanal[0]['permitir_suscripciones']);
+            $privacidadCanal->setPermitirDescargar($privacidadDelCanal[0]['permitir_descargar']);
+            $privacidadCanalDTO[]= $privacidadCanal;
+
+            $videoDTO->setPrivacidadDTO($privacidadCanalDTO);
 
             $listaVideosDTO[]=$videoDTO;
         }

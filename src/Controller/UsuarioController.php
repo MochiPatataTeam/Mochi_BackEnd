@@ -64,6 +64,7 @@ class   UsuarioController extends AbstractController
         $usuario->setTelefono($data['telefono']);
         $usuario->setNombreCanal($data['nombre_canal']);
         $usuario->setDescripcion($data['descripcion']);
+        $usuario->setImagen($data['imagen']);
 
         $privacidadUsuario->setIsPublico($data['isPublico']);
         $privacidadUsuario->setPermitirSuscripciones($data['permitirSuscripciones']);
@@ -204,67 +205,6 @@ class   UsuarioController extends AbstractController
 
         return $this -> json($usuarioDTO, Response::HTTP_OK);
     }
-
-//    #[Route('/{id}', name: 'getById', methods: ["GET"])]
-//    public function getById(UsuarioRepository $usuarioRepository, int $id): JsonResponse
-//    {
-//        $usuarios = $usuarioRepository -> getById($id);
-//        $usuarioYPrivacidadDTO = [];
-//
-//        foreach ($usuarios as $usuario){
-//            $usuarioDTO = new UsuarioDTO();
-//            $usuarioDTO->setId($usuario['id']);
-//            $usuarioDTO->setNombre($usuario['nombre']);
-//            $usuarioDTO->setApellidos($usuario['apellidos']);
-//            $usuarioDTO->setUsername($usuario['username']);
-//            $usuarioDTO->setEmail($usuario['email']);
-//            $usuarioDTO->setTelefono($usuario['telefono']);
-//            $usuarioDTO->setNombreCanal($usuario['nombre_canal']);
-//            $usuarioDTO->setDescripcion($usuario['descripcion']);
-//            $usuarioDTO->setSuscriptores($usuario['suscriptores']);
-//            $usuarioDTO->setImagen($usuario['imagen']);
-//            $usuarioYPrivacidadDTO[] = $usuarioDTO;
-//
-//            $privacidadDTO = new PrivacidadUsuarioDTO();
-//            $privacidadDTO->setIsPublico($usuario['is_publico']);
-//            $privacidadDTO->setPermitirSuscripciones($usuario['permitir_suscripciones']);
-//            $privacidadDTO->setPermitirDescargar($usuario['permitir_descargar']);
-//            $usuarioYPrivacidadDTO[] = $privacidadDTO;
-//        }
-//
-//        return $this -> json($usuarioYPrivacidadDTO, Response::HTTP_OK);
-//    }
-//
-//
-//    #[Route('/canal/{canal}', name: 'getByNombreCanal', methods: ["GET"])]
-//    public function getByCanal(UsuarioRepository $usuarioRepository, string $canal): JsonResponse
-//    {
-//        $usuarios = $usuarioRepository -> getByCanal($canal);
-//        $usuarioYPrivacidadDTO = [];
-//
-//        foreach ($usuarios as $usuario){
-//            $usuarioDTO = new UsuarioDTO();
-//            $usuarioDTO->setId($usuario['id']);
-//            $usuarioDTO->setNombre($usuario['nombre']);
-//            $usuarioDTO->setApellidos($usuario['apellidos']);
-//            $usuarioDTO->setUsername($usuario['username']);
-//            $usuarioDTO->setEmail($usuario['email']);
-//            $usuarioDTO->setTelefono($usuario['telefono']);
-//            $usuarioDTO->setNombreCanal($usuario['nombre_canal']);
-//            $usuarioDTO->setDescripcion($usuario['descripcion']);
-//            $usuarioDTO->setSuscriptores($usuario['suscriptores']);
-//            $usuarioDTO->setImagen($usuario['imagen']);
-//            $usuarioYPrivacidadDTO[] = $usuarioDTO;
-//
-//            $privacidadDTO = new PrivacidadUsuarioDTO();
-//            $privacidadDTO->setIsPublico($usuario['is_publico']);
-//            $privacidadDTO->setPermitirSuscripciones($usuario['permitir_suscripciones']);
-//            $privacidadDTO->setPermitirDescargar($usuario['permitir_descargar']);
-//            $usuarioYPrivacidadDTO[] = $privacidadDTO;
-//        }
-//
-//        return $this -> json($usuarioYPrivacidadDTO, Response::HTTP_OK);
-//    }
 
 }
 

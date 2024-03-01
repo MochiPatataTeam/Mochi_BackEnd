@@ -37,6 +37,7 @@ class RegistroController extends AbstractController
             $user->setTelefono($data['telefono']);
             $user->setNombreCanal($data['nombre_canal']);
             $user->setDescripcion($data['descripcion']);
+            $user->setImagen($data['imagen']);
             //suscriptores(deafult 0-null)
             //imagen
             $privacidadUsuario = new PrivacidadUsuario();

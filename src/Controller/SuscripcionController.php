@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use PHPUnit\Util\Json;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -73,6 +74,15 @@ class SuscripcionController extends AbstractController
             return $this->json(['message' => '¡Gracias por suscribirte!', 'prueba' => true], Response::HTTP_CREATED);
         }
     }
+
+    #[Route('/substotales/{id_canal}', name: 'substotales', methods: ['GET'])]
+    public function subtotalesPorCanal(int $id_canal, SuscripcionRepository $suscripcionRepository): JsonResponse
+    {
+      $suscriptores = $suscripcionRepository->suscripciontotal($id_canal);
+      dump($suscriptores);
+      return $this->json($suscriptores, Response::HTTP_CREATED);
+    }
+
     #[Route('/subs', name: 'subs', methods: ['GET'])]
     public function getContactos(SuscripcionRepository $suscripcionRepository, Request $request): JsonResponse
     {

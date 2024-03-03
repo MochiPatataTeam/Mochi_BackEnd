@@ -78,7 +78,7 @@ class VideoRepository extends ServiceEntityRepository
         join mochi.usuario u on u.id = v.id_canal 
         join mochi.tematica t on v.id_tematica = t.id
         join mochi.privacidad_usuario pu on pu.id_usuario = u.id 
-        WHERE s.id_suscriptor=:id order by v.id';
+        WHERE s.id_suscriptor=:id and s.sub = true order by v.id';
         $query = $entityManager->getConnection()->executeQuery($sql, ['id' => $id,], ['id' => \PDO::PARAM_INT,]);
         $result = $query->fetchAllAssociative();
         return $result;

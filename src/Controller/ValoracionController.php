@@ -109,16 +109,24 @@ public function sumavisualizacion(EntityManagerInterface $entityManager, Valorac
                 $valoracionEntity->setDislike(false);
             }
             $entityManager->flush();
-            return $this->json(['message' => 'Buen likesito'], Response::HTTP_OK);
+            return $this->json(['message' => 'Buen likesito', 'like'=> true], Response::HTTP_OK);
         }else{
             $valoracionEntity = $entityManager->getRepository(Valoracion::class)->find($valoracion['id']);
             $valoracionEntity->setFav(false);
             $entityManager->flush();
-            return $this->json(['message' => 'Adios al likesito'], Response::HTTP_OK);
+            return $this->json(['message' => 'Adios al likesito', 'like'=>false], Response::HTTP_OK);
         }
 
     }
-
+    #[Route('/comprobar/fav/{id_video}/{id_usuario}', name: "comprobarFavPorId", methods: ["POST"])]
+    public function comprobarlikeporvideo( ValoracionRepository $valoracionRepository, int $id_video, int $id_usuario): JsonResponse
+    {
+        $valora = $valoracionRepository->valoracionPorId($id_video, $id_usuario);
+        //el resultado de la query le implementa un update en el like a true
+        $valoracion = $valora[0];
+        $favActual = $valoracion['fav'];
+        return $this->json($favActual, Response::HTTP_OK);
+    }
 
     #[Route('/dislike/{id_video}/{id_usuario}', name: "dislikePorId", methods: ["POST"])]
     public function dislikeporvideo(EntityManagerInterface $entityManager, ValoracionRepository $valoracionRepository, int $id_video, int $id_usuario): JsonResponse
@@ -137,14 +145,24 @@ public function sumavisualizacion(EntityManagerInterface $entityManager, Valorac
                 $valoracionEntity->setFav(false);
             }
             $entityManager->flush();
-            return $this->json(['message' => 'Buen dislikesito'], Response::HTTP_OK);
+            return $this->json(['message' => 'Buen dislikesito', 'dislike'=>true], Response::HTTP_OK);
         }else{
             $valoracionEntity = $entityManager->getRepository(Valoracion::class)->find($valoracion['id']);
             $valoracionEntity->setDislike(false);
             $entityManager->flush();
-            return $this->json(['message' => 'Adios al dislikesito'], Response::HTTP_OK);
+            return $this->json(['message' => 'Adios al dislikesito', 'dislike'=>false], Response::HTTP_OK);
         }
 
+    }
+
+    #[Route('/comprobar/dislike/{id_video}/{id_usuario}', name: "comprobardislikePorId", methods: ["POST"])]
+    public function comprobardislikeporvideo( ValoracionRepository $valoracionRepository, int $id_video, int $id_usuario): JsonResponse
+    {
+        $valora = $valoracionRepository->valoracionPorId($id_video, $id_usuario);
+        //el resultado de la query le implementa un update en el like a true
+        $valoracion = $valora[0];
+        $dislikeActual = $valoracion['dislike'];
+        return $this->json($dislikeActual, Response::HTTP_OK);
     }
 
 }

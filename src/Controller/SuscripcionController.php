@@ -112,7 +112,17 @@ class SuscripcionController extends AbstractController
 
     }
 
+    #[Route('/substotalesReproduccion/{id_canal}', name: 'substotalesReproduccion', methods: ['GET'])]
+    public function subtotalesReproduccion(EntityManagerInterface $entityManager, SuscripcionRepository $suscripcionRepository,string $id_canal):JsonResponse
+    {
+        $busquedausuario= $entityManager->getRepository(Usuario::class)->findBy(["nombre_canal"=>$id_canal]);
+        $usuario= $busquedausuario[0];
 
+        $suscriptores = $suscripcionRepository->suscripciontotal($usuario->getId('id'));
+        dump($suscriptores);
+        return $this->json($suscriptores, Response::HTTP_CREATED);
+
+    }
 
 
     #[Route('/{id}', name: "delete_suscripcion_by_id", methods: ["DELETE"])]

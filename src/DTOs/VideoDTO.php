@@ -15,6 +15,23 @@ class VideoDTO
     private ?array $comentarioDTO = null;
     private ?array $valoracionGlobalDTO = null;
     private ?array $PrivacidadDTO = null;
+    private ?string $imagenCanal = null;
+
+    /**
+     * @return string|null
+     */
+    public function getImagenCanal(): ?string
+    {
+        return $this->imagenCanal;
+    }
+
+    /**
+     * @param string|null $imagenCanal
+     */
+    public function setImagenCanal(?string $imagenCanal): void
+    {
+        $this->imagenCanal = $imagenCanal;
+    }
 
     /**
      * @return array|null

@@ -145,6 +145,9 @@ class VideoController extends AbstractController
         $videoDTO->setCanal($video->getCanal()->getNombreCanal());
         $videoDTO->setTematica($video->getTematica()->getTematica());
 
+        $imagen = $videoRepository -> getImagenByNombreCanal($video->getCanal()->getNombreCanal());
+        $videoDTO->setImagenCanal($imagen[0]['imagen']);
+
 
         $comentariosDTO = [];
         foreach ($comentarios as $comentario) {

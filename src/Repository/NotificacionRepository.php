@@ -26,7 +26,7 @@ class NotificacionRepository extends ServiceEntityRepository
     {
         $entityManager = $this->getEntityManager();
 
-        $sql = 'SELECT n.*, tn.tipo, u.username
+        $sql = 'SELECT n.*, tn.tipo, u.nombre_canal
                     FROM mochi.notificacion n
                     JOIN mochi.tipo_notificacion tn ON tn.id = n.id_tipo
                     JOIN mochi.usuario u ON u.id = n.id_creador

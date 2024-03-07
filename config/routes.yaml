@@ -1,3 +1,15 @@
 controllers:
-    resource: ../src/Controller/
+    resource: '../src/Controller/'
     type: attribute
+
+api_login_check:
+    path: /api/login_check
+
+app_logout:
+    path: /logout
+    controller: App\Controller\LogoutController::logout
+
+
+app_reset_password_redirect:
+    path: /reset-password-redirect
+    controller: App\Controller\ResetPasswordRedirectController::redirect

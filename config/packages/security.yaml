@@ -1,29 +1,55 @@
 security:
-    # https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords
+
+    enable_authenticator_manager: true
+
     password_hashers:
-        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
-    # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
+        # auto hasher with default options for the User class (and children)
+        App\Entity\Usuario: 'auto'
+
+        # auto hasher with custom options for all PasswordAuthenticatedUserInterface instances
+        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface:
+            algorithm: 'auto'
+            cost: 15
+
     providers:
-        users_in_memory: { memory: null }
-    firewalls:
-        dev:
-            pattern: ^/(_(profiler|wdt)|css|images|js)/
-            security: false
+        app_user_provider:
+            entity:
+                class: App\Entity\Usuario
+                property: username
+
+    firewalls: #el que va a estar recibiendo las peticiones
+        login:
+            pattern: ^/api/login #LOGIN
+            stateless: true
+            json_login:
+                check_path: /api/login_check
+                success_handler: lexik_jwt_authentication.handler.authentication_success
+                failure_handler: lexik_jwt_authentication.handler.authentication_failure
+        api:
+            pattern: ^/api
+            stateless: true
+            jwt: ~
         main:
             lazy: true
-            provider: users_in_memory
+            provider: app_user_provider
+            form_login: #para el LOGIN
+                login_path: login
+                check_path: login
+            login_throttling: true #para la verificacion
+            logout:
+                path: app_logout
+                target: /
+                invalidate_session: true
 
-            # activate different ways to authenticate
-            # https://symfony.com/doc/current/security.html#the-firewall
 
-            # https://symfony.com/doc/current/security/impersonating_user.html
-            # switch_user: true
 
-    # Easy way to control access for large sections of your site
-    # Note: Only the *first* access control that matches will be used
-    access_control:
-        # - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
+
+
+    access_control: #aqui configuro mis rutas y el rol que pueden acceder a estar rutas
+        #- { path: ^/api/login, roles: PUBLIC_ACCESS } #este permite acceder a cualquiera(PermitAll)
+        #- { path: ^/api/registro, roles: PUBLIC_ACCESS } #est  e permite acceder a cualquiera
+        #- { path: ^/api,       roles: IS_AUTHENTICATED_FULLY } #este permite acceder solo al que esta autentificado
+        - { path: ^/api,       roles: PUBLIC_ACCESS } #este permite acceder solo al que esta autentificado
 
 when@test:
     security:
